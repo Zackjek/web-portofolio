@@ -17,7 +17,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id">
-      <body className={`${inter.className} bg-zinc-950 text-zinc-50 antialiased`}>
+      <body 
+  className={`${inter.className} bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-zinc-800 via-zinc-900 to-zinc-950 min-h-screen text-zinc-50 antialiased`} 
+  suppressHydrationWarning
+>
         <Navbar />
         <main className="max-w-4xl mx-auto px-4 pt-24 pb-16 min-h-screen">
           {children}
