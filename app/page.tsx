@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Image from 'next/image'; // Memanggil komponen Image bawaan Next.js
+import Image from 'next/image';
 
 export default function Home() {
   return (
@@ -20,10 +20,11 @@ export default function Home() {
           Mahasiswa Informatika. Aku sangat tertarik dengan pengembangan web full-stack dan rekayasa perangkat lunak. Saat ini sedang aktif membangun berbagai proyek berbasis Next.js dan Go, mulai dari aplikasi pelacak kebugaran hingga bot otomatisasi.
         </p>
 
-        <div className="flex flex-wrap justify-center md:justify-start gap-4 pt-4">
+        {/* Tombol Aksi - Sekarang Lengkap! */}
+        <div className="flex flex-wrap justify-center md:justify-start gap-3 pt-4">
           <Link 
             href="/portofolio" 
-            className="px-6 py-3 rounded-lg bg-white text-zinc-950 font-medium hover:bg-zinc-200 transition-colors"
+            className="px-5 py-2.5 rounded-lg bg-white text-zinc-950 font-medium hover:bg-zinc-200 transition-colors"
           >
             Lihat Portofolio
           </Link>
@@ -31,9 +32,25 @@ export default function Home() {
             href="https://github.com/Zackjek" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="px-6 py-3 rounded-lg bg-zinc-900 text-white font-medium border border-zinc-800 hover:border-zinc-600 transition-colors"
+            className="px-5 py-2.5 rounded-lg bg-zinc-900 text-white font-medium border border-zinc-800 hover:border-zinc-500 transition-colors"
           >
-            Kunjungi GitHub
+            GitHub
+          </a>
+          <a 
+            href="https://www.instagram.com/mzakkyy_?igsh=cWxkb3lxMmcwbHd3" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="px-5 py-2.5 rounded-lg bg-zinc-900 text-white font-medium border border-zinc-800 hover:border-pink-500/60 transition-colors"
+          >
+            Instagram
+          </a>
+          <a 
+            href="https://wa.me/6282138057177" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="px-5 py-2.5 rounded-lg bg-zinc-900 text-white font-medium border border-zinc-800 hover:border-emerald-500/60 transition-colors"
+          >
+            WhatsApp
           </a>
         </div>
       </div>
