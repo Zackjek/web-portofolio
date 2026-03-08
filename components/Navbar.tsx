@@ -5,7 +5,7 @@ export default function Navbar() {
     <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-md fixed top-0 w-full z-50">
       <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
         <Link href="/" className="text-xl font-bold text-white hover:text-zinc-300 transition-colors">
-          Zackjek.
+          Muhammad Zaky Mubarok
         </Link>
         <div className="flex gap-6 text-sm font-medium text-zinc-400">
           <Link href="/portofolio" className="hover:text-white transition-colors">
