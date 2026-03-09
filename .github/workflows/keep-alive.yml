@@ -1,0 +1,21 @@
+name: Supabase Keep Alive Robot
+
+# Robot ini akan berjalan secara otomatis dan manual
+on:
+  schedule:
+    # Berjalan setiap hari pada jam 00:00 UTC (jam 7 pagi WIB)
+    - cron: '0 0 * * *'
+  # Memungkinkan kita menjalankan robot ini secara manual lewat tombol di GitHub
+  workflow_dispatch:
+
+jobs:
+  ping-website:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Mengunjungi halaman web untuk memancing Supabase
+        # GANTI URL DI BAWAH INI DENGAN LINK VERCEL KAMU YANG ASLI
+        run: |
+          curl -s https://muhammadzakymubarok-portofolio.vercel.app/portofolio > /dev/null
+          curl -s https://muhammadzakymubarok-portofolio.vercel.app/jurnal > /dev/null
+          echo "Ping sukses! Supabase aman dari mode pause."
