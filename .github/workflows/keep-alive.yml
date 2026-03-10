@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Mengunjungi halaman web untuk memancing Supabase
-        # GANTI URL DI BAWAH INI DENGAN LINK VERCEL KAMU YANG ASLI
+        
         run: |
           curl -s https://muhammadzakymubarok-portofolio.vercel.app/portofolio > /dev/null
           curl -s https://muhammadzakymubarok-portofolio.vercel.app/jurnal > /dev/null
