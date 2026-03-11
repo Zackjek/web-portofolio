@@ -27,7 +27,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-r from-zinc-500 to-zinc-800 rounded-full blur-xl opacity-40 group-hover:opacity-70 transition-opacity duration-700"></div>
           <div className="relative w-full h-full rounded-full p-1.5 bg-gradient-to-br from-zinc-700 via-zinc-900 to-black">
             <Image 
-              src="/foto-zaky.jpeg" 
+              src="/fotokuy.png" 
               alt="Muhammad Zaky Mubarok" 
               fill
               className="object-cover rounded-full border border-zinc-800"
