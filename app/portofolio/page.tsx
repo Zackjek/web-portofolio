@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase';
+import ShareButton from '@/components/ShareButton';
 
 export const revalidate = 0;
 
@@ -9,7 +10,7 @@ export default async function Portofolio() {
     .order('created_at', { ascending: false });
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-in-out">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-in-out py-10 px-4 max-w-5xl mx-auto">
       <div>
         <h1 className="text-3xl font-bold text-white mb-2">Portofolio & Pencapaian</h1>
         <p className="text-zinc-400">Kumpulan proyek aplikasi, sertifikat, dan pencapaian lainnya.</p>
@@ -22,13 +23,11 @@ export default async function Portofolio() {
           </div>
         ) : (
           proyekList.map((proyek) => {
-            // Deteksi pintar: Cek apakah file yang diupload itu PDF
             const isPdf = proyek.gambar_url?.toLowerCase().includes('.pdf');
 
             return (
-              <div key={proyek.id} className="flex flex-col border border-zinc-800 bg-zinc-900/30 rounded-xl overflow-hidden hover:border-zinc-600 transition-all group relative">
+              <div key={proyek.id} id={`item-${proyek.id}`} className="flex flex-col border border-zinc-800 bg-zinc-900/30 rounded-xl overflow-hidden hover:border-zinc-600 transition-all group relative scroll-mt-24">
                 
-                {/* 1. BAGIAN VISUAL (Gambar atau Kotak PDF) */}
                 <div className="h-48 w-full bg-zinc-800 relative overflow-hidden flex items-center justify-center">
                   {isPdf ? (
                     <div className="flex flex-col items-center justify-center text-zinc-400 group-hover:text-emerald-400 transition-colors">
@@ -47,14 +46,18 @@ export default async function Portofolio() {
                   )}
                 </div>
                 
-                {/* 2. BAGIAN TEKS & DESKRIPSI */}
-                <div className="p-6 flex flex-col flex-grow">
-                  <h2 className="text-xl font-semibold text-white mb-2">{proyek.judul}</h2>
+                <div className="p-6 flex flex-col flex-grow relative">
                   
-                  {/* Deskripsinya akan selalu muncul di sini */}
+                  {/* Panggil Tombol Share di pojok kanan atas teks */}
+                  <div className="absolute top-4 right-4 z-20">
+                    <ShareButton section="portofolio" id={proyek.id} title={proyek.judul} />
+                  </div>
+
+                  {/* Kasih jarak pr-20 supaya judul tidak nabrak tombol share */}
+                  <h2 className="text-xl font-semibold text-white mb-2 pr-20">{proyek.judul}</h2>
+                  
                   <p className="text-zinc-400 text-sm mb-6 flex-grow whitespace-pre-wrap">{proyek.deskripsi}</p>
                   
-                  {/* Badge Teknologi (Hanya muncul kalau kamu isi formnya) */}
                   {proyek.teknologi && (
                     <div className="flex flex-wrap gap-2 text-xs text-zinc-300 font-medium mb-4">
                       {proyek.teknologi.split(',').map((tech: string, i: number) => (
@@ -65,9 +68,8 @@ export default async function Portofolio() {
                     </div>
                   )}
 
-                  {/* Tombol Tautan (Hanya muncul kalau kamu isi form link-nya) */}
                   {proyek.link_proyek && (
-                    <a href={proyek.link_proyek} target="_blank" rel="noopener noreferrer" className="text-sm text-emerald-400 hover:text-emerald-300 font-medium inline-flex items-center gap-1 z-20 relative">
+                    <a href={proyek.link_proyek} target="_blank" rel="noopener noreferrer" className="text-sm text-emerald-400 hover:text-emerald-300 font-medium inline-flex items-center gap-1 z-20 relative w-max">
                       Kunjungi Tautan &rarr;
                     </a>
                   )}
