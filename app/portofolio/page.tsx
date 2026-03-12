@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase';
 import ShareButton from '@/components/ShareButton';
+import Link from 'next/link';
 
 export const revalidate = 0;
 
@@ -28,6 +29,9 @@ export default async function Portofolio() {
             return (
               <div key={proyek.id} id={`item-${proyek.id}`} className="flex flex-col border border-zinc-800 bg-zinc-900/30 rounded-xl overflow-hidden hover:border-zinc-600 transition-all group relative scroll-mt-24">
                 
+                {/* Ini yang bikin seluruh kotaknya bisa diklik dan mengarah ke Halaman Detail */}
+                <Link href={`/portofolio/${proyek.id}`} className="absolute inset-0 z-10"></Link>
+
                 <div className="h-48 w-full bg-zinc-800 relative overflow-hidden flex items-center justify-center">
                   {isPdf ? (
                     <div className="flex flex-col items-center justify-center text-zinc-400 group-hover:text-emerald-400 transition-colors">
@@ -35,7 +39,6 @@ export default async function Portofolio() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                       </svg>
                       <span className="font-medium text-sm">Dokumen Sertifikat (PDF)</span>
-                      <a href={proyek.gambar_url} target="_blank" rel="noopener noreferrer" className="absolute inset-0 z-10"></a>
                     </div>
                   ) : (
                     <img 
@@ -48,18 +51,18 @@ export default async function Portofolio() {
                 
                 <div className="p-6 flex flex-col flex-grow relative">
                   
-                  {/* Panggil Tombol Share di pojok kanan atas teks */}
+                  {/* Tombol Share dengan path dinamis (z-20 supaya bisa diklik, tidak tertutup link utama) */}
                   <div className="absolute top-4 right-4 z-20">
-                    <ShareButton section="portofolio" id={proyek.id} title={proyek.judul} />
+                    <ShareButton path={`/portofolio/${proyek.id}`} title={proyek.judul} />
                   </div>
 
-                  {/* Kasih jarak pr-20 supaya judul tidak nabrak tombol share */}
-                  <h2 className="text-xl font-semibold text-white mb-2 pr-20">{proyek.judul}</h2>
+                  <h2 className="text-xl font-semibold text-white mb-2 pr-20 relative z-20">{proyek.judul}</h2>
                   
-                  <p className="text-zinc-400 text-sm mb-6 flex-grow whitespace-pre-wrap">{proyek.deskripsi}</p>
+                  {/* Efek line-clamp-3 untuk memotong deskripsi yang terlalu panjang jadi 3 baris saja */}
+                  <p className="text-zinc-400 text-sm mb-6 flex-grow whitespace-pre-wrap line-clamp-3 relative z-20">{proyek.deskripsi}</p>
                   
                   {proyek.teknologi && (
-                    <div className="flex flex-wrap gap-2 text-xs text-zinc-300 font-medium mb-4">
+                    <div className="flex flex-wrap gap-2 text-xs text-zinc-300 font-medium mb-4 relative z-20">
                       {proyek.teknologi.split(',').map((tech: string, i: number) => (
                         <span key={i} className="bg-zinc-800/80 px-2.5 py-1 rounded-md">
                           {tech.trim()}
@@ -68,6 +71,7 @@ export default async function Portofolio() {
                     </div>
                   )}
 
+                  {/* Tautan Proyek External (Kalau diisi) */}
                   {proyek.link_proyek && (
                     <a href={proyek.link_proyek} target="_blank" rel="noopener noreferrer" className="text-sm text-emerald-400 hover:text-emerald-300 font-medium inline-flex items-center gap-1 z-20 relative w-max">
                       Kunjungi Tautan &rarr;

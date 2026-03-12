@@ -1,22 +1,22 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-export default function ShareButton({ section, id, title }: { section: string, id: number, title: string }) {
+export default function ShareButton({ path, title }: { path: string, title: string }) {
   const [copied, setCopied] = useState(false);
+  const [fullUrl, setFullUrl] = useState("");
+
+  useEffect(() => {
+    // Otomatis menggabungkan domain aslimu (vercel) dengan /jurnal/1 atau /portofolio/1
+    setFullUrl(`${window.location.origin}${path}`);
+  }, [path]);
 
   const handleShare = async (e: React.MouseEvent) => {
-    e.preventDefault(); // Mencegah klik tembus ke file aslinya
-    
-    // Bikin link spesifik menuju kotak elemen ini
-    const url = `${window.location.origin}/${section}#item-${id}`;
-    
+    e.preventDefault(); 
     try {
-      // Fitur share bawaan HP (iOS/Android)
       if (navigator.share && /mobile/i.test(navigator.userAgent)) {
-        await navigator.share({ title: `Lihat ${title} dari Zaky`, url });
+        await navigator.share({ title: `${title} - Zaky Mubarok`, url: fullUrl });
       } else {
-        // Kalau di laptop, copy link ke clipboard
-        await navigator.clipboard.writeText(url);
+        await navigator.clipboard.writeText(fullUrl);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
       }
@@ -29,7 +29,7 @@ export default function ShareButton({ section, id, title }: { section: string, i
     <button 
       onClick={handleShare}
       className="p-2.5 text-zinc-400 hover:text-emerald-400 hover:bg-zinc-800 rounded-lg transition-all flex items-center gap-2 text-sm font-medium z-20 relative bg-zinc-900/50 border border-zinc-800"
-      title="Bagikan Tautan"
+      title="Bagikan Halaman Ini"
     >
       {copied ? (
         <span className="text-emerald-400">Tersalin!</span>

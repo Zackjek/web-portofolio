@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase';
 import ShareButton from '@/components/ShareButton';
+import Link from 'next/link';
 
 export const revalidate = 0;
 
@@ -23,11 +24,10 @@ export default async function Jurnal() {
           </div>
         ) : (
           jurnalList.map((jurnal) => (
-            // scroll-mt-24 supaya pas diklik link-nya, posisinya tidak tertutup navbar atas
             <div key={jurnal.id} id={`item-${jurnal.id}`} className="flex items-center justify-between p-4 border border-zinc-800 bg-zinc-900/30 rounded-xl hover:border-zinc-600 transition-all group relative scroll-mt-24">
               
-              {/* Link file asli */}
-              <a href={jurnal.file_url} target="_blank" rel="noopener noreferrer" className="absolute inset-0 z-10"></a>
+              {/* Ini yang bikin seluruh kotaknya bisa diklik dan mengarah ke Halaman Detail */}
+              <Link href={`/jurnal/${jurnal.id}`} className="absolute inset-0 z-10"></Link>
               
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-zinc-800/50 rounded-lg text-zinc-400 group-hover:text-emerald-400 group-hover:bg-zinc-800 transition-colors">
@@ -39,9 +39,9 @@ export default async function Jurnal() {
                 </div>
               </div>
 
-              {/* Panggil Tombol Share */}
+              {/* Tombol Share dengan Path Detail */}
               <div className="relative z-20">
-                <ShareButton section="jurnal" id={jurnal.id} title={jurnal.judul} />
+                <ShareButton path={`/jurnal/${jurnal.id}`} title={jurnal.judul} />
               </div>
 
             </div>
