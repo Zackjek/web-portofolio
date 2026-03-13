@@ -27,10 +27,13 @@ export default async function DetailJurnal({ params }: { params: Promise<{ id: s
           </p>
         </header>
         
-        {/* INI BAGIAN UTAMA BLOGNYA */}
-        <div className="prose prose-invert prose-emerald max-w-none text-zinc-300 leading-loose text-lg whitespace-pre-wrap">
-          {jurnal.konten ? jurnal.konten : <span className="italic text-zinc-600">Jurnal ini tidak memiliki konten teks.</span>}
-        </div>
+        {/* INI BAGIAN UTAMA BLOGNYA - SEKARANG MENDUKUNG TABEL HTML */}
+        <div 
+          className="prose prose-invert prose-emerald max-w-none text-zinc-300 leading-loose text-lg overflow-x-auto"
+          dangerouslySetInnerHTML={{ 
+            __html: jurnal.konten || "<span class='italic text-zinc-600'>Jurnal ini tidak memiliki konten teks.</span>" 
+          }}
+        />
       </article>
 
     </div>

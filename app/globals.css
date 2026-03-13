@@ -1,5 +1,5 @@
 @import "tailwindcss";
-
+@plugin "@tailwindcss/typography"; /* Ini yang bikin tabel jadi cantik otomatis */
 
 :root {
   --background: #09090b; 
@@ -14,8 +14,14 @@
   --font-mono: var(--font-geist-mono);
 }
 
-
 body {
   font-family: Arial, Helvetica, sans-serif;
-  
+}
+
+/* Trik Hacker: Menampilkan placeholder di kotak yang bukan textarea */
+[contenteditable]:empty:before {
+  content: attr(data-placeholder);
+  color: #52525b;
+  pointer-events: none;
+  display: block;
 }

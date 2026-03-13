@@ -4,6 +4,12 @@ import Link from 'next/link';
 
 export const revalidate = 0;
 
+// Fungsi untuk membersihkan kode HTML biar gak bocor di tampilan preview
+const stripHtml = (html: string) => {
+  if (!html) return "Tidak ada konten.";
+  return html.replace(/<[^>]*>?/gm, '');
+};
+
 export default async function Jurnal() {
   const { data: jurnalList } = await supabase
     .from('jurnal')
@@ -32,9 +38,9 @@ export default async function Jurnal() {
                 <h2 className="text-xl font-bold text-zinc-200 group-hover:text-white transition-colors mb-1">{jurnal.judul}</h2>
                 <p className="text-sm text-zinc-500 mb-3">Diterbitkan pada: {new Date(jurnal.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
                 
-                {/* Menampilkan cuplikan/snippet isi blog */}
+                {/* Menampilkan cuplikan isi blog yang sudah bersih dari tag HTML tabel */}
                 <p className="text-zinc-400 text-sm line-clamp-2">
-                  {jurnal.konten || "Tidak ada konten."}
+                  {stripHtml(jurnal.konten)}
                 </p>
               </div>
 

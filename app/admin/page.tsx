@@ -1,16 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { supabase } from "@/lib/supabase";
 
 export default function AdminPanel() {
   const [tab, setTab] = useState<"jurnal" | "portofolio">("jurnal");
   
-  // State Blog/Jurnal (TIDAK PAKAI FILE LAGI)
+  // State Jurnal
   const [judulJurnal, setJudulJurnal] = useState("");
-  const [kontenJurnal, setKontenJurnal] = useState("");
+  const editorRef = useRef<HTMLDivElement>(null); // Senjata rahasia pembaca tabel
 
-  // State Portofolio (Tetap sama)
+  // State Portofolio
   const [judulPorto, setJudulPorto] = useState("");
   const [deskripsi, setDeskripsi] = useState("");
   const [teknologi, setTeknologi] = useState("");
@@ -20,18 +20,21 @@ export default function AdminPanel() {
   const [loading, setLoading] = useState(false);
   const [pesan, setPesan] = useState("");
 
-  // Fungsi Upload Blog (Simpan Teks, bukan File)
   const handleUploadJurnal = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!judulJurnal || !kontenJurnal) return setPesan("⚠️ Judul dan isi konten blog wajib diisi!");
+    // Ambil format HTML (termasuk tabel) dari kanvas ajaib
+    const kontenHTML = editorRef.current?.innerHTML || ""; 
+
+    if (!judulJurnal || !kontenHTML) return setPesan("⚠️ Judul dan isi konten blog wajib diisi!");
     setLoading(true); setPesan("⏳ Mengunggah tulisan blog...");
     try {
       const { error: dbErr } = await supabase.from("jurnal").insert([
-        { judul: judulJurnal, konten: kontenJurnal }
+        { judul: judulJurnal, konten: kontenHTML } // Simpan beserta kode HTML tabelnya
       ]);
       if (dbErr) throw dbErr;
       setPesan("✅ Tulisan Blog berhasil diunggah!");
-      setJudulJurnal(""); setKontenJurnal("");
+      setJudulJurnal(""); 
+      if (editorRef.current) editorRef.current.innerHTML = ""; // Bersihkan kanvas
     } catch (err: any) {
       setPesan(`❌ Gagal: ${err.message}`);
     } finally {
@@ -76,22 +79,35 @@ export default function AdminPanel() {
 
       <div className="bg-zinc-900/50 p-6 rounded-xl border border-zinc-800">
         
-        {/* FORM BLOG JURNAL (Baru) */}
+        {/* FORM BLOG JURNAL */}
         {tab === "jurnal" && (
           <form onSubmit={handleUploadJurnal} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-zinc-300">Judul Jurnal (Minggu ke-X)</label>
+              <label className="text-sm font-medium text-zinc-300">Judul Jurnal</label>
               <input type="text" value={judulJurnal} onChange={(e) => setJudulJurnal(e.target.value)} className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2 text-white focus:border-emerald-500 outline-none transition-colors" placeholder="Misal: Jurnal Minggu ke-1" />
             </div>
+            
             <div className="space-y-2">
-              <label className="text-sm font-medium text-zinc-300">Isi Jurnal / Laporan</label>
-              <textarea value={kontenJurnal} onChange={(e) => setKontenJurnal(e.target.value)} className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-3 text-white h-64 focus:border-emerald-500 outline-none transition-colors" placeholder="Ketik laporan mingguanmu di sini..." />
+              <label className="text-sm font-medium text-zinc-300 flex justify-between">
+                <span>Isi Laporan Blog</span>
+                <span className="text-xs text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded">Bisa Paste Tabel Excel/Word!</span>
+              </label>
+              
+              {/* KANVAS AJAIB PENGGANTI TEXTAREA */}
+              <div
+                ref={editorRef}
+                contentEditable
+                suppressContentEditableWarning
+                className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-3 text-white min-h-[16rem] max-h-[30rem] overflow-y-auto focus:border-emerald-500 outline-none transition-colors prose prose-invert max-w-none"
+                data-placeholder="Ketik laporanmu di sini, atau langsung CTRL+V tabel dari Excel/Word..."
+              />
             </div>
+            
             <button type="submit" disabled={loading} className="w-full bg-white text-zinc-950 font-bold py-3 rounded-lg hover:bg-zinc-200 transition-colors">{loading ? "Memproses..." : "Terbitkan Tulisan"}</button>
           </form>
         )}
 
-        {/* FORM PORTOFOLIO (Tetap Sama) */}
+        {/* FORM PORTOFOLIO */}
         {tab === "portofolio" && (
           <form onSubmit={handleUploadPorto} className="space-y-4">
             <div className="space-y-2"><label className="text-sm text-zinc-300">Judul Proyek / Sertifikat</label><input type="text" value={judulPorto} onChange={(e) => setJudulPorto(e.target.value)} className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2 text-white" /></div>
