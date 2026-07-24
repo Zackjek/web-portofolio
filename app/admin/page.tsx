@@ -8,6 +8,7 @@ import { removeMedia, uploadMedia } from "@/lib/storage";
 
 type Tab = "kelola" | "jurnal" | "portofolio" | "sertifikat";
 type AccessState = "checking" | "guest" | "authorized" | "denied";
+type AuthMessageTone = "neutral" | "error";
 type QueuedCertificate = {
   id: string;
   file: File;
@@ -33,18 +34,35 @@ function titleFromFile(name: string) {
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
-function maskedEmail(email: string) {
-  const [name, domain] = email.split("@");
-  if (!domain) return email;
-  const visibleName = name.length > 3 ? name.slice(0, 3) : name.slice(0, 1);
-  return `${visibleName}${"•".repeat(Math.max(4, name.length - visibleName.length))}@${domain}`;
+function loginErrorMessage(message: string) {
+  const normalizedMessage = message.toLowerCase();
+
+  if (
+    normalizedMessage.includes("invalid login credentials") ||
+    normalizedMessage.includes("email not confirmed")
+  ) {
+    return "Email atau password admin salah.";
+  }
+
+  if (
+    normalizedMessage.includes("too many requests") ||
+    normalizedMessage.includes("rate limit")
+  ) {
+    return "Terlalu banyak percobaan login. Tunggu sebentar lalu coba lagi.";
+  }
+
+  return "Login gagal. Periksa koneksi dan coba lagi.";
 }
 
 export default function AdminPage() {
   const [access, setAccess] = useState<AccessState>("checking");
   const [activeEmail, setActiveEmail] = useState("");
-  const [sendingLink, setSendingLink] = useState(false);
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [signingIn, setSigningIn] = useState(false);
   const [authMessage, setAuthMessage] = useState("");
+  const [authMessageTone, setAuthMessageTone] =
+    useState<AuthMessageTone>("neutral");
 
   useEffect(() => {
     let active = true;
@@ -70,7 +88,8 @@ export default function AdminPage() {
       .catch(() => {
         if (!active) return;
         setAccess("guest");
-        setAuthMessage("Sesi tidak dapat diperiksa. Silakan minta link login baru.");
+        setAuthMessage("Sesi tidak dapat diperiksa. Silakan masuk kembali.");
+        setAuthMessageTone("error");
       });
 
     const {
@@ -85,35 +104,65 @@ export default function AdminPage() {
     };
   }, []);
 
-  const requestLoginLink = async () => {
+  const signIn = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
     if (!isSupabaseConfigured) {
       setAuthMessage("Konfigurasi Supabase belum tersedia pada deployment ini.");
+      setAuthMessageTone("error");
       return;
     }
 
-    setSendingLink(true);
-    setAuthMessage("");
-    const { error } = await supabase.auth.signInWithOtp({
-      email: ADMIN_EMAIL,
-      options: {
-        emailRedirectTo: `${window.location.origin}/admin`,
-        shouldCreateUser: true,
-      },
-    });
+    if (!password) {
+      setAuthMessage("Masukkan password admin.");
+      setAuthMessageTone("error");
+      return;
+    }
 
-    setAuthMessage(
-      error
-        ? `Gagal mengirim link login: ${error.message}`
-        : `Link login sudah dikirim ke ${maskedEmail(ADMIN_EMAIL)}. Buka email itu pada perangkat ini.`,
-    );
-    setSendingLink(false);
+    setSigningIn(true);
+    setAuthMessage("");
+    setAuthMessageTone("neutral");
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: ADMIN_EMAIL,
+        password,
+      });
+
+      if (error) {
+        setAuthMessage(loginErrorMessage(error.message));
+        setAuthMessageTone("error");
+        return;
+      }
+
+      const normalizedEmail = data.user.email?.toLowerCase() ?? "";
+      if (normalizedEmail !== ADMIN_EMAIL) {
+        await supabase.auth.signOut();
+        setActiveEmail(normalizedEmail);
+        setAccess("denied");
+        setAuthMessage("Akun ini tidak memiliki akses admin.");
+        setAuthMessageTone("error");
+        return;
+      }
+
+      setPassword("");
+      setActiveEmail(normalizedEmail);
+      setAccess("authorized");
+    } catch {
+      setAuthMessage("Login gagal. Periksa koneksi dan coba lagi.");
+      setAuthMessageTone("error");
+    } finally {
+      setSigningIn(false);
+    }
   };
 
   const signOut = async () => {
     await supabase.auth.signOut();
     setAccess("guest");
     setActiveEmail("");
+    setPassword("");
     setAuthMessage("Kamu sudah keluar dari Admin Studio.");
+    setAuthMessageTone("neutral");
   };
 
   if (access === "checking") {
@@ -154,8 +203,8 @@ export default function AdminPage() {
           </h1>
           <p className="mt-4 text-sm leading-7 text-zinc-500">
             Aksi publikasi, edit, dan hapus hanya tersedia untuk email pemilik
-            portofolio. Kami akan mengirim link login sekali pakai—tanpa
-            password.
+            portofolio. Masuk langsung dengan password admin—tanpa menunggu
+            email atau magic link.
           </p>
 
           {access === "denied" && (
@@ -166,36 +215,86 @@ export default function AdminPage() {
           )}
 
           {authMessage && (
-            <div className="mt-5 rounded-xl border border-white/[0.08] bg-white/[0.025] p-4 text-sm leading-6 text-zinc-400">
+            <div
+              role={authMessageTone === "error" ? "alert" : "status"}
+              className={`mt-5 rounded-xl border p-4 text-sm leading-6 ${
+                authMessageTone === "error"
+                  ? "border-red-400/20 bg-red-400/[0.05] text-red-200"
+                  : "border-white/[0.08] bg-white/[0.025] text-zinc-400"
+              }`}
+            >
               {authMessage}
             </div>
           )}
 
-          <div className="mt-7 space-y-3">
-            {access === "denied" && (
-              <button
-                type="button"
-                onClick={() => void signOut()}
-                className="w-full rounded-xl border border-white/10 px-5 py-3.5 text-sm font-bold text-zinc-400 transition hover:text-white"
-              >
-                Keluar dari akun ini
-              </button>
-            )}
+          {access === "denied" ? (
             <button
               type="button"
-              disabled={sendingLink || !isSupabaseConfigured}
-              onClick={() => void requestLoginLink()}
-              className="flex w-full items-center justify-between rounded-xl bg-lime-300 px-5 py-4 text-sm font-black text-[#071005] transition hover:bg-lime-200 disabled:cursor-not-allowed disabled:opacity-40"
+              onClick={() => void signOut()}
+              className="mt-7 w-full rounded-xl border border-white/10 px-5 py-3.5 text-sm font-bold text-zinc-400 transition hover:text-white"
             >
-              <span>
-                {sendingLink ? "Mengirim link..." : "Kirim link login admin"}
-              </span>
-              <span>↗</span>
+              Keluar dari akun ini
             </button>
-          </div>
+          ) : (
+            <form onSubmit={signIn} className="mt-7 space-y-4">
+              <label className="block space-y-2">
+                <span className="text-xs font-bold text-zinc-400">
+                  Email admin
+                </span>
+                <input
+                  type="email"
+                  name="email"
+                  value={ADMIN_EMAIL}
+                  readOnly
+                  autoComplete="username"
+                  className={`${fieldClass} cursor-not-allowed opacity-70`}
+                />
+              </label>
+
+              <label className="block space-y-2">
+                <span className="text-xs font-bold text-zinc-400">
+                  Password
+                </span>
+                <span className="relative block">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    autoComplete="current-password"
+                    minLength={6}
+                    required
+                    autoFocus
+                    className={`${fieldClass} pr-24`}
+                    placeholder="Masukkan password admin"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((current) => !current)}
+                    className="absolute inset-y-0 right-3 my-auto h-fit rounded-lg px-2 py-1 text-[10px] font-bold text-zinc-600 transition hover:text-lime-300"
+                    aria-label={
+                      showPassword ? "Sembunyikan password" : "Tampilkan password"
+                    }
+                    aria-pressed={showPassword}
+                  >
+                    {showPassword ? "Sembunyikan" : "Lihat"}
+                  </button>
+                </span>
+              </label>
+
+              <button
+                type="submit"
+                disabled={signingIn || !isSupabaseConfigured || !password}
+                className="flex w-full items-center justify-between rounded-xl bg-lime-300 px-5 py-4 text-sm font-black text-[#071005] transition hover:bg-lime-200 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                <span>{signingIn ? "Memverifikasi..." : "Masuk ke Admin"}</span>
+                <span>↗</span>
+              </button>
+            </form>
+          )}
 
           <p className="mt-5 text-center font-mono text-[8px] uppercase tracking-[0.12em] text-zinc-700">
-            Tujuan: {maskedEmail(ADMIN_EMAIL)}
+            Password diverifikasi aman oleh Supabase Auth
           </p>
         </div>
       </section>
