@@ -1,47 +1,94 @@
-import { supabase } from '@/lib/supabase';
-import Link from 'next/link';
+/* eslint-disable @next/next/no-img-element */
+import Link from "next/link";
+import ShareButton from "@/components/ShareButton";
+import { getTags, isPdfUrl } from "@/lib/content";
+import { supabase } from "@/lib/supabase";
 
-export default async function DetailPortofolio({ params }: { params: Promise<{ id: string }> }) {
+export default async function PortfolioDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
-  const { data: proyek } = await supabase.from('portofolio').select('*').eq('id', id).single();
+  const { data: project } = await supabase
+    .from("portofolio")
+    .select("*")
+    .eq("id", id)
+    .single();
 
-  if (!proyek) return <div className="p-20 text-center text-zinc-400">Data tidak ditemukan.</div>;
-  const isPdf = proyek.gambar_url?.toLowerCase().includes('.pdf');
+  if (!project) {
+    return (
+      <div className="page-shell grid min-h-screen place-items-center pt-24 text-center">
+        <div>
+          <p className="font-mono text-xs uppercase tracking-wider text-zinc-600">404 / Work not found</p>
+          <Link href="/portofolio" className="mt-5 inline-block text-sm font-bold text-lime-300">Kembali ke karya</Link>
+        </div>
+      </div>
+    );
+  }
+
+  const pdf = isPdfUrl(project.gambar_url);
 
   return (
-    <div className="max-w-4xl mx-auto py-20 px-6 animate-in fade-in duration-500">
-      <Link href="/portofolio" className="text-zinc-500 hover:text-white mb-8 inline-block font-medium">&larr; Kembali ke Portofolio</Link>
-      
-      <h1 className="text-4xl md:text-5xl font-black text-white mb-6">{proyek.judul}</h1>
-      
-      {proyek.teknologi && (
-        <div className="flex flex-wrap gap-2 text-sm text-zinc-300 font-medium mb-10">
-          {proyek.teknologi.split(',').map((tech: string, i: number) => (
-            <span key={i} className="bg-zinc-800/80 border border-zinc-700 px-3 py-1.5 rounded-lg">{tech.trim()}</span>
-          ))}
-        </div>
-      )}
+    <section className="section-pad page-shell pt-32 md:pt-40">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <Link href="/portofolio" className="group inline-flex items-center gap-2 text-xs font-bold text-zinc-500 transition-colors hover:text-white">
+          <span className="transition-transform group-hover:-translate-x-1">←</span> Kembali ke karya
+        </Link>
+        <ShareButton path={`/portofolio/${project.id}`} title={project.judul} />
+      </div>
 
-      <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl overflow-hidden mb-10 shadow-2xl">
-        {isPdf ? (
-          <div className="p-20 text-center flex flex-col items-center">
-            <svg className="w-24 h-24 text-zinc-700 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
-            <a href={proyek.gambar_url} target="_blank" rel="noopener noreferrer" className="px-8 py-4 bg-white text-zinc-950 font-bold rounded-xl transition-all hover:scale-105 inline-block">Lihat Dokumen Sertifikat</a>
+      <header className="grid gap-8 py-14 lg:grid-cols-[1fr_0.52fr] lg:items-end">
+        <div>
+          <p className="eyebrow">Project case / {String(project.id).padStart(2, "0")}</p>
+          <h1 className="mt-6 max-w-4xl text-5xl font-black leading-[0.98] tracking-[-0.06em] text-gradient md:text-7xl">
+            {project.judul}
+          </h1>
+        </div>
+        <div>
+          <p className="text-sm leading-7 text-zinc-500">{project.deskripsi}</p>
+          <div className="mt-5 flex flex-wrap gap-2">
+            {getTags(project.teknologi).map((tag: string) => (
+              <span key={tag} className="rounded-full border border-white/[0.09] px-3 py-1.5 font-mono text-[9px] uppercase tracking-wider text-zinc-500">
+                {tag}
+              </span>
+            ))}
           </div>
+        </div>
+      </header>
+
+      <div className="overflow-hidden rounded-[1.75rem] border border-white/[0.1] bg-[#0a1015] shadow-2xl">
+        {pdf ? (
+          <div className="grid min-h-[65vh] place-items-center p-8 text-center">
+            <div>
+              <svg className="mx-auto h-20 w-20 text-lime-300/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.1">
+                <path d="M7 3h7l4 4v14H7z" />
+                <path d="M14 3v5h5M9.5 15h5M9.5 18h3.5" />
+              </svg>
+              <h2 className="mt-6 text-2xl font-black text-white">Dokumen PDF</h2>
+              <a href={project.gambar_url} target="_blank" rel="noreferrer" className="mt-6 inline-flex items-center gap-3 rounded-full bg-lime-300 px-6 py-3 text-sm font-black text-[#071005]">
+                Buka dokumen <span>↗</span>
+              </a>
+            </div>
+          </div>
+        ) : project.gambar_url ? (
+          <img src={project.gambar_url} alt={project.judul} className="h-auto w-full object-cover" />
         ) : (
-          <img src={proyek.gambar_url} alt={proyek.judul} className="w-full h-auto object-cover" />
+          <div className="grid min-h-[50vh] place-items-center font-mono text-xs text-zinc-700">NO PREVIEW AVAILABLE</div>
         )}
       </div>
 
-      <div className="mb-12">
-        <p className="text-zinc-300 leading-relaxed whitespace-pre-wrap text-lg">{proyek.deskripsi}</p>
+      <div className="grid gap-8 border-b border-white/[0.08] py-14 lg:grid-cols-[0.45fr_1fr]">
+        <p className="eyebrow h-max">About the project</p>
+        <div>
+          <p className="whitespace-pre-wrap text-lg leading-9 text-zinc-400">{project.deskripsi}</p>
+          {project.link_proyek && (
+            <a href={project.link_proyek} target="_blank" rel="noreferrer" className="mt-8 inline-flex items-center gap-3 rounded-full border border-lime-300/25 bg-lime-300/[0.07] px-5 py-3 text-sm font-bold text-lime-300 transition hover:bg-lime-300/[0.13]">
+              Kunjungi proyek <span>↗</span>
+            </a>
+          )}
+        </div>
       </div>
-
-      {proyek.link_proyek && (
-        <a href={proyek.link_proyek} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-8 py-4 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-xl transition-colors border border-zinc-700 hover:border-zinc-500">
-          Kunjungi Tautan Proyek <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-        </a>
-      )}
-    </div>
+    </section>
   );
 }

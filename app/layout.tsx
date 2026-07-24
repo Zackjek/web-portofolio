@@ -1,13 +1,32 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar"; 
-
-const inter = Inter({ subsets: ["latin"] });
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import InteractiveBackground from "@/components/InteractiveBackground";
 
 export const metadata: Metadata = {
-  title: "Zackjek | Portofolio & Jurnal",
-  description: "Jurnal harian dan portofolio proyek",
+  metadataBase: new URL("https://muhammadzakymubarok-portofolio.vercel.app"),
+  title: {
+    default: "Muhammad Zaky Mubarok — Developer Portfolio",
+    template: "%s — Muhammad Zaky Mubarok",
+  },
+  description:
+    "Portofolio Muhammad Zaky Mubarok, mahasiswa Informatika dan web developer yang membangun produk digital modern.",
+  keywords: [
+    "Muhammad Zaky Mubarok",
+    "web developer",
+    "Next.js",
+    "portfolio",
+    "mahasiswa informatika",
+  ],
+  openGraph: {
+    title: "Muhammad Zaky Mubarok — Developer Portfolio",
+    description:
+      "Proyek, sertifikat, dan catatan perjalanan Muhammad Zaky Mubarok di dunia teknologi.",
+    type: "website",
+    locale: "id_ID",
+    images: ["/fotokuy.png"],
+  },
 };
 
 export default function RootLayout({
@@ -17,14 +36,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id">
-      <body 
-  className={`${inter.className} bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-zinc-800 via-zinc-900 to-zinc-950 min-h-screen text-zinc-50 antialiased`} 
-  suppressHydrationWarning
->
+      <body suppressHydrationWarning>
+        <InteractiveBackground />
         <Navbar />
-        <main className="max-w-4xl mx-auto px-4 pt-24 pb-16 min-h-screen">
-          {children}
-        </main>
+        <main className="relative z-10 min-h-screen">{children}</main>
+        <Footer />
       </body>
     </html>
   );
