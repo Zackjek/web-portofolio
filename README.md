@@ -10,6 +10,7 @@ Personal portfolio built with Next.js 16, React 19, Tailwind CSS 4, and Supabase
 - Batch certificate upload (drag-and-drop, multiple image/PDF files, editable titles)
 - Journal publishing with rich HTML/table support
 - Admin content control center with search, filters, edit, media replacement, preview, and confirmed deletion
+- Password-based admin authentication backed by Supabase Auth
 - Automatic Supabase Storage cleanup when project or certificate media is replaced or deleted
 - Dynamic content powered by Supabase
 - Accessible mobile navigation and reduced-motion support
@@ -48,8 +49,12 @@ and entries with “sertifikat” in the title are also recognized by the galler
 
 ## Admin access and RLS
 
-`/admin` uses a Supabase email magic link and only accepts the configured admin
-email. Apply
+`/admin` uses Supabase email-and-password authentication and only accepts the
+configured admin email. The password is verified and stored by Supabase Auth;
+never add it to source code or a `NEXT_PUBLIC_*` environment variable. Ensure
+the configured owner exists in Authentication > Users and has a password.
+
+Apply
 `supabase/migrations/20260724150000_secure_admin_content.sql` once to the
 Supabase project before using production write actions. The migration keeps
 public reads available while restricting insert, update, delete, upload, and
