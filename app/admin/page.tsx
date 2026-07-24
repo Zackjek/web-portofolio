@@ -1,29 +1,29 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import AdminContentManager from "@/components/AdminContentManager";
 import { CERTIFICATE_MARKER } from "@/lib/content";
 import { isSupabaseConfigured, supabase } from "@/lib/supabase";
+import { removeMedia, uploadMedia } from "@/lib/storage";
 
-type Tab = "jurnal" | "portofolio" | "sertifikat";
+type Tab = "kelola" | "jurnal" | "portofolio" | "sertifikat";
+type AccessState = "checking" | "guest" | "authorized" | "denied";
 type QueuedCertificate = {
   id: string;
   file: File;
   title: string;
 };
 
+const ADMIN_EMAIL = (
+  process.env.NEXT_PUBLIC_ADMIN_EMAIL ??
+  "muhammadzakymubarok@student.telkomuniversity.ac.id"
+).toLowerCase();
+
 const fieldClass =
   "w-full rounded-xl border border-white/[0.09] bg-[#080d11] px-4 py-3 text-sm text-white placeholder:text-zinc-700 transition focus:border-lime-300/50 focus:outline-none";
 
 function errorMessage(error: unknown) {
   return error instanceof Error ? error.message : "Terjadi kesalahan yang tidak diketahui.";
-}
-
-function cleanFileName(name: string) {
-  return name
-    .normalize("NFKD")
-    .replace(/[^\w.\-]+/g, "-")
-    .replace(/-+/g, "-")
-    .toLowerCase();
 }
 
 function titleFromFile(name: string) {
@@ -33,10 +33,194 @@ function titleFromFile(name: string) {
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
-export default function AdminPanel() {
-  const [tab, setTab] = useState<Tab>("sertifikat");
+function maskedEmail(email: string) {
+  const [name, domain] = email.split("@");
+  if (!domain) return email;
+  const visibleName = name.length > 3 ? name.slice(0, 3) : name.slice(0, 1);
+  return `${visibleName}${"•".repeat(Math.max(4, name.length - visibleName.length))}@${domain}`;
+}
+
+export default function AdminPage() {
+  const [access, setAccess] = useState<AccessState>("checking");
+  const [activeEmail, setActiveEmail] = useState("");
+  const [sendingLink, setSendingLink] = useState(false);
+  const [authMessage, setAuthMessage] = useState("");
+
+  useEffect(() => {
+    let active = true;
+
+    const applySession = (email: string | null | undefined) => {
+      if (!active) return;
+      const normalizedEmail = email?.toLowerCase() ?? "";
+      setActiveEmail(normalizedEmail);
+      setAccess(
+        !normalizedEmail
+          ? "guest"
+          : normalizedEmail === ADMIN_EMAIL
+            ? "authorized"
+            : "denied",
+      );
+    };
+
+    void supabase.auth
+      .getSession()
+      .then(({ data }) => {
+        applySession(data.session?.user.email);
+      })
+      .catch(() => {
+        if (!active) return;
+        setAccess("guest");
+        setAuthMessage("Sesi tidak dapat diperiksa. Silakan minta link login baru.");
+      });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      applySession(session?.user.email);
+    });
+
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const requestLoginLink = async () => {
+    if (!isSupabaseConfigured) {
+      setAuthMessage("Konfigurasi Supabase belum tersedia pada deployment ini.");
+      return;
+    }
+
+    setSendingLink(true);
+    setAuthMessage("");
+    const { error } = await supabase.auth.signInWithOtp({
+      email: ADMIN_EMAIL,
+      options: {
+        emailRedirectTo: `${window.location.origin}/admin`,
+        shouldCreateUser: true,
+      },
+    });
+
+    setAuthMessage(
+      error
+        ? `Gagal mengirim link login: ${error.message}`
+        : `Link login sudah dikirim ke ${maskedEmail(ADMIN_EMAIL)}. Buka email itu pada perangkat ini.`,
+    );
+    setSendingLink(false);
+  };
+
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    setAccess("guest");
+    setActiveEmail("");
+    setAuthMessage("Kamu sudah keluar dari Admin Studio.");
+  };
+
+  if (access === "checking") {
+    return (
+      <section className="section-pad page-shell grid min-h-[80vh] place-items-center pt-32">
+        <div className="text-center">
+          <span className="mx-auto block h-8 w-8 animate-spin rounded-full border-2 border-white/10 border-t-lime-300" />
+          <p className="mt-4 font-mono text-[9px] uppercase tracking-[0.18em] text-zinc-600">
+            Memeriksa sesi admin
+          </p>
+        </div>
+      </section>
+    );
+  }
+
+  if (access !== "authorized") {
+    return (
+      <section className="section-pad page-shell grid min-h-[88vh] place-items-center pt-32">
+        <div className="glass-card w-full max-w-lg rounded-[1.7rem] p-6 md:p-9">
+          <span className="grid h-12 w-12 place-items-center rounded-full border border-lime-300/15 bg-lime-300/[0.05] text-lime-300">
+            <svg
+              className="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.7"
+              aria-hidden="true"
+            >
+              <rect x="5" y="10" width="14" height="11" rx="2" />
+              <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+            </svg>
+          </span>
+          <p className="mt-7 font-mono text-[9px] uppercase tracking-[0.18em] text-lime-300">
+            Protected workspace
+          </p>
+          <h1 className="mt-2 text-3xl font-black tracking-[-0.04em] text-white">
+            Masuk ke Admin Studio
+          </h1>
+          <p className="mt-4 text-sm leading-7 text-zinc-500">
+            Aksi publikasi, edit, dan hapus hanya tersedia untuk email pemilik
+            portofolio. Kami akan mengirim link login sekali pakai—tanpa
+            password.
+          </p>
+
+          {access === "denied" && (
+            <div className="mt-5 rounded-xl border border-red-400/20 bg-red-400/[0.05] p-4 text-sm leading-6 text-red-200">
+              Akun <span className="font-bold">{activeEmail}</span> tidak
+              memiliki akses admin.
+            </div>
+          )}
+
+          {authMessage && (
+            <div className="mt-5 rounded-xl border border-white/[0.08] bg-white/[0.025] p-4 text-sm leading-6 text-zinc-400">
+              {authMessage}
+            </div>
+          )}
+
+          <div className="mt-7 space-y-3">
+            {access === "denied" && (
+              <button
+                type="button"
+                onClick={() => void signOut()}
+                className="w-full rounded-xl border border-white/10 px-5 py-3.5 text-sm font-bold text-zinc-400 transition hover:text-white"
+              >
+                Keluar dari akun ini
+              </button>
+            )}
+            <button
+              type="button"
+              disabled={sendingLink || !isSupabaseConfigured}
+              onClick={() => void requestLoginLink()}
+              className="flex w-full items-center justify-between rounded-xl bg-lime-300 px-5 py-4 text-sm font-black text-[#071005] transition hover:bg-lime-200 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <span>
+                {sendingLink ? "Mengirim link..." : "Kirim link login admin"}
+              </span>
+              <span>↗</span>
+            </button>
+          </div>
+
+          <p className="mt-5 text-center font-mono text-[8px] uppercase tracking-[0.12em] text-zinc-700">
+            Tujuan: {maskedEmail(ADMIN_EMAIL)}
+          </p>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <AdminPanel
+      userEmail={activeEmail}
+      onSignOut={() => void signOut()}
+    />
+  );
+}
+
+function AdminPanel({
+  userEmail,
+  onSignOut,
+}: {
+  userEmail: string;
+  onSignOut: () => void;
+}) {
+  const [tab, setTab] = useState<Tab>("kelola");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [contentVersion, setContentVersion] = useState(0);
   const editorRef = useRef<HTMLDivElement>(null);
 
   const [journalTitle, setJournalTitle] = useState("");
@@ -60,21 +244,6 @@ export default function AdminPanel() {
     setMessage("");
   };
 
-  const uploadFile = async (file: File, folder: string) => {
-    const path = `${folder}/${Date.now()}-${crypto.randomUUID()}-${cleanFileName(file.name)}`;
-    const { error: uploadError } = await supabase.storage
-      .from("gambar-portofolio")
-      .upload(path, file, {
-        cacheControl: "3600",
-        contentType: file.type,
-        upsert: false,
-      });
-
-    if (uploadError) throw uploadError;
-    const { data } = supabase.storage.from("gambar-portofolio").getPublicUrl(path);
-    return data.publicUrl;
-  };
-
   const handleUploadJournal = async (event: React.FormEvent) => {
     event.preventDefault();
     const content = editorRef.current?.innerHTML.trim() ?? "";
@@ -93,6 +262,7 @@ export default function AdminPanel() {
 
       setJournalTitle("");
       if (editorRef.current) editorRef.current.innerHTML = "";
+      setContentVersion((current) => current + 1);
       setMessage("Jurnal berhasil diterbitkan.");
     } catch (error) {
       setMessage(`Gagal menerbitkan jurnal: ${errorMessage(error)}`);
@@ -110,8 +280,10 @@ export default function AdminPanel() {
 
     setLoading(true);
     setMessage("Mengunggah proyek...");
+    let uploadedUrl: string | null = null;
     try {
-      const imageUrl = await uploadFile(projectFile, "projects");
+      const { publicUrl: imageUrl } = await uploadMedia(projectFile, "projects");
+      uploadedUrl = imageUrl;
       const { error } = await supabase.from("portofolio").insert([
         {
           judul: projectTitle.trim(),
@@ -122,14 +294,17 @@ export default function AdminPanel() {
         },
       ]);
       if (error) throw error;
+      uploadedUrl = null;
 
       setProjectTitle("");
       setProjectDescription("");
       setProjectTech("");
       setProjectLink("");
       setProjectFile(null);
+      setContentVersion((current) => current + 1);
       setMessage("Proyek berhasil ditambahkan ke galeri.");
     } catch (error) {
+      if (uploadedUrl) await removeMedia(uploadedUrl);
       setMessage(`Gagal mengunggah proyek: ${errorMessage(error)}`);
     } finally {
       setLoading(false);
@@ -179,7 +354,7 @@ export default function AdminPanel() {
       for (let index = 0; index < certificateFiles.length; index += 1) {
         const item = certificateFiles[index];
         setMessage(`Mengunggah ${index + 1} dari ${certificateFiles.length}: ${item.title}`);
-        const fileUrl = await uploadFile(item.file, "certificates");
+        const { publicUrl: fileUrl } = await uploadMedia(item.file, "certificates");
         const tags = [
           CERTIFICATE_MARKER,
           issuer.trim(),
@@ -198,7 +373,10 @@ export default function AdminPanel() {
             gambar_url: fileUrl,
           },
         ]);
-        if (error) throw error;
+        if (error) {
+          await removeMedia(fileUrl);
+          throw error;
+        }
         setUploadProgress(Math.round(((index + 1) / certificateFiles.length) * 100));
       }
 
@@ -207,6 +385,7 @@ export default function AdminPanel() {
       setCertificateDescription("");
       setVerificationUrl("");
       setUploadProgress(100);
+      setContentVersion((current) => current + 1);
       setMessage(`${total} sertifikat berhasil dipublikasikan.`);
     } catch (error) {
       setMessage(`Proses terhenti: ${errorMessage(error)}`);
@@ -220,13 +399,14 @@ export default function AdminPanel() {
       <div className="grid gap-10 lg:grid-cols-[280px_1fr]">
         <aside>
           <p className="eyebrow">Content studio</p>
-          <h1 className="mt-5 text-4xl font-black tracking-[-0.05em] text-white">Panel publikasi.</h1>
+          <h1 className="mt-5 text-4xl font-black tracking-[-0.05em] text-white">Admin studio.</h1>
           <p className="mt-4 text-sm leading-7 text-zinc-500">
-            Tambahkan karya, jurnal, atau banyak sertifikat dalam satu sesi.
+            Kelola, edit, hapus, dan publikasikan seluruh konten portofolio.
           </p>
 
           <div className="mt-8 space-y-2 rounded-2xl border border-white/[0.08] bg-white/[0.025] p-2">
             {([
+              ["kelola", "Kelola konten", "Edit, preview & hapus"],
               ["sertifikat", "Sertifikat", "Upload banyak file"],
               ["portofolio", "Karya", "Proyek & studi kasus"],
               ["jurnal", "Jurnal", "Catatan mingguan"],
@@ -256,9 +436,29 @@ export default function AdminPanel() {
               {isSupabaseConfigured ? "Database connected" : "Environment required"}
             </p>
           </div>
+
+          <div className="mt-3 rounded-xl border border-white/[0.08] bg-white/[0.025] p-4">
+            <p className="font-mono text-[8px] uppercase tracking-[0.15em] text-zinc-700">
+              Signed in as
+            </p>
+            <p className="mt-2 truncate text-xs font-bold text-zinc-400">
+              {userEmail}
+            </p>
+            <button
+              type="button"
+              onClick={onSignOut}
+              className="mt-3 text-xs font-bold text-zinc-600 transition hover:text-red-300"
+            >
+              Keluar dari admin
+            </button>
+          </div>
         </aside>
 
         <div className="glass-card rounded-[1.7rem] p-5 md:p-8">
+          {tab === "kelola" && (
+            <AdminContentManager refreshKey={contentVersion} />
+          )}
+
           {tab === "sertifikat" && (
             <form onSubmit={handleUploadCertificates} className="space-y-7">
               <div>
