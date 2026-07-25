@@ -2,6 +2,7 @@
 
 /* eslint-disable @next/next/no-img-element */
 import { useEffect, useMemo, useState } from "react";
+import PdfThumbnail from "@/components/PdfThumbnail";
 import {
   getCertificateMeta,
   isPdfUrl,
@@ -86,16 +87,8 @@ export default function CertificateGallery({ items }: { items: PortfolioItem[] }
             <article key={item.id} className="glass-card interactive-card group rounded-[1.35rem] p-3">
               <button type="button" onClick={() => setSelected(item)} className="block w-full text-left">
                 <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-[#10171c]">
-                  {pdf ? (
-                    <div className="grid h-full place-items-center bg-[radial-gradient(circle_at_center,rgba(158,240,26,0.08),transparent_65%)]">
-                      <div className="text-center">
-                        <svg className="mx-auto h-14 w-14 text-lime-300/80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" aria-hidden="true">
-                          <path d="M7 3h7l4 4v14H7z" />
-                          <path d="M14 3v5h5M9.5 15h5M9.5 18h3.5" />
-                        </svg>
-                        <p className="mt-3 font-mono text-[9px] uppercase tracking-[0.2em] text-zinc-600">PDF document</p>
-                      </div>
-                    </div>
+                  {pdf && item.gambar_url ? (
+                    <PdfThumbnail url={item.gambar_url} title={item.judul} />
                   ) : item.gambar_url ? (
                     <img src={item.gambar_url} alt={item.judul} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
                   ) : (
