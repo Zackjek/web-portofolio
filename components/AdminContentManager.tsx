@@ -9,6 +9,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { createPortal } from "react-dom";
 import {
   CERTIFICATE_MARKER,
   formatDate,
@@ -266,7 +267,7 @@ function EditContentModal({
     });
   };
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-[120] grid place-items-center bg-black/85 p-3 backdrop-blur-xl sm:p-6"
       role="dialog"
@@ -470,7 +471,8 @@ function EditContentModal({
           </button>
         </div>
       </form>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
@@ -493,7 +495,7 @@ function DeleteContentModal({
 }) {
   const confirmed = phrase.trim().toUpperCase() === "HAPUS";
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-[130] grid place-items-center bg-black/90 p-4 backdrop-blur-xl"
       role="alertdialog"
@@ -563,7 +565,8 @@ function DeleteContentModal({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
