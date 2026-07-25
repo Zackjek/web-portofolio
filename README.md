@@ -11,6 +11,7 @@ Personal portfolio built with Next.js 16, React 19, Tailwind CSS 4, and Supabase
 - Journal publishing with rich HTML/table support
 - Admin content control center with search, filters, edit, media replacement, preview, and confirmed deletion
 - Password-based admin authentication backed by Supabase Auth
+- In-app password recovery with a dedicated password update screen
 - Automatic Supabase Storage cleanup when project or certificate media is replaced or deleted
 - Dynamic content powered by Supabase
 - Accessible mobile navigation and reduced-motion support
@@ -54,6 +55,18 @@ configured admin email. The password is verified and stored by Supabase Auth;
 never add it to source code or a `NEXT_PUBLIC_*` environment variable. Ensure
 the configured owner exists in Authentication > Users and has a password.
 
+The **Kirim email untuk membuat password** action uses Supabase recovery and
+returns to `/reset-password`, where the authenticated recovery session can call
+`updateUser`. Add the following exact production URL to Authentication > URL
+Configuration > Redirect URLs:
+
+```text
+https://muhammadzakymubarok-portofolio.vercel.app/reset-password
+```
+
+Recovery links that fall back to the production Site URL are also forwarded to
+the reset screen before the page hydrates.
+
 Apply
 `supabase/migrations/20260724150000_secure_admin_content.sql` once to the
 Supabase project before using production write actions. The migration keeps
@@ -70,3 +83,4 @@ inside the migration/policies.
 - `/sertifikat` — certificate gallery
 - `/jurnal` — learning journal
 - `/admin` — full content management and publishing studio
+- `/reset-password` — authenticated password recovery screen
