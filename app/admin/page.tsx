@@ -60,6 +60,8 @@ export default function AdminPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [signingIn, setSigningIn] = useState(false);
+  const [sendingRecovery, setSendingRecovery] = useState(false);
+  const [recoverySent, setRecoverySent] = useState(false);
   const [authMessage, setAuthMessage] = useState("");
   const [authMessageTone, setAuthMessageTone] =
     useState<AuthMessageTone>("neutral");
@@ -153,6 +155,48 @@ export default function AdminPage() {
       setAuthMessageTone("error");
     } finally {
       setSigningIn(false);
+    }
+  };
+
+  const sendPasswordRecovery = async () => {
+    if (!isSupabaseConfigured) {
+      setAuthMessage("Konfigurasi Supabase belum tersedia pada deployment ini.");
+      setAuthMessageTone("error");
+      return;
+    }
+
+    setSendingRecovery(true);
+    setAuthMessage("");
+    setAuthMessageTone("neutral");
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(ADMIN_EMAIL, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+
+      if (error) {
+        const isRateLimited =
+          error.message.toLowerCase().includes("rate limit") ||
+          error.message.toLowerCase().includes("too many requests");
+        setAuthMessage(
+          isRateLimited
+            ? "Batas pengiriman email Supabase sedang penuh. Tunggu sekitar satu jam, lalu tekan tombol ini sekali saja."
+            : "Email reset belum berhasil dikirim. Periksa koneksi lalu coba lagi.",
+        );
+        setAuthMessageTone("error");
+        return;
+      }
+
+      setRecoverySent(true);
+      setAuthMessage(
+        "Email reset sudah dikirim. Buka email paling baru dan gunakan link tersebut satu kali.",
+      );
+      setAuthMessageTone("neutral");
+    } catch {
+      setAuthMessage("Email reset belum berhasil dikirim. Coba lagi nanti.");
+      setAuthMessageTone("error");
+    } finally {
+      setSendingRecovery(false);
     }
   };
 
@@ -290,6 +334,28 @@ export default function AdminPage() {
                 <span>{signingIn ? "Memverifikasi..." : "Masuk ke Admin"}</span>
                 <span>↗</span>
               </button>
+
+              <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-4">
+                <p className="text-xs leading-5 text-zinc-500">
+                  Belum pernah membuat password atau lupa password?
+                </p>
+                <button
+                  type="button"
+                  onClick={() => void sendPasswordRecovery()}
+                  disabled={
+                    sendingRecovery ||
+                    recoverySent ||
+                    !isSupabaseConfigured
+                  }
+                  className="mt-2 text-left text-xs font-bold text-lime-300 transition hover:text-lime-200 disabled:cursor-not-allowed disabled:text-zinc-600"
+                >
+                  {sendingRecovery
+                    ? "Mengirim email reset..."
+                    : recoverySent
+                      ? "Email reset sudah dikirim"
+                      : "Kirim email untuk membuat password →"}
+                </button>
+              </div>
             </form>
           )}
 
