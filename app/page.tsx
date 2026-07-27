@@ -86,7 +86,7 @@ export default async function Home() {
           <div className="relative mx-auto w-full max-w-md lg:max-w-none">
             <div className="absolute -inset-10 rounded-full bg-cyan-300/[0.05] blur-3xl" />
             <div className="glass-card float-slow relative mx-auto aspect-[4/5] max-w-[420px] overflow-hidden rounded-[2rem] p-3">
-              <div className="relative h-full overflow-hidden rounded-[1.45rem] bg-[#10171c]">
+              <div className="dark-media relative h-full overflow-hidden rounded-[1.45rem] bg-[#10171c]">
                 <Image
                   src="/fotokuy.png"
                   alt="Muhammad Zaky Mubarok"
@@ -211,7 +211,7 @@ export default async function Home() {
                   href={`/portofolio/${project.id}`}
                   className={`glass-card interactive-card group rounded-2xl p-3 ${index === 0 ? "md:col-span-2 lg:col-span-1" : ""}`}
                 >
-                  <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-[#10171c]">
+                  <div className="dark-media relative aspect-[4/3] overflow-hidden rounded-xl bg-[#10171c]">
                     {project.gambar_url ? (
                       <img src={project.gambar_url} alt={project.judul} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
                     ) : (

@@ -86,7 +86,7 @@ export default function CertificateGallery({ items }: { items: PortfolioItem[] }
           return (
             <article key={item.id} className="glass-card interactive-card group rounded-[1.35rem] p-3">
               <button type="button" onClick={() => setSelected(item)} className="block w-full text-left">
-                <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-[#10171c]">
+                <div className="dark-media relative aspect-[4/3] overflow-hidden rounded-xl bg-[#10171c]">
                   {pdf && item.gambar_url ? (
                     <PdfThumbnail url={item.gambar_url} title={item.judul} />
                   ) : item.gambar_url ? (

@@ -5,6 +5,8 @@ Personal portfolio built with Next.js 16, React 19, Tailwind CSS 4, and Supabase
 ## Features
 
 - Responsive editorial-style portfolio with pointer-reactive lighting and subtle motion
+- Persistent dark/light theme with system-preference detection and no theme flash
+- Scroll progress, reveal-on-scroll sections, and an accessible back-to-top control
 - Searchable and filterable project archive
 - Dedicated certificate gallery with image and in-page PDF preview
 - Batch certificate upload (drag-and-drop, multiple image/PDF files, editable titles)
@@ -14,6 +16,7 @@ Personal portfolio built with Next.js 16, React 19, Tailwind CSS 4, and Supabase
 - In-app password recovery with a dedicated password update screen
 - Automatic Supabase Storage cleanup when project or certificate media is replaced or deleted
 - Dynamic content powered by Supabase
+- Journal summaries cleaned from legacy Microsoft Word/VML styling artifacts
 - Accessible mobile navigation and reduced-motion support
 
 ## Local development

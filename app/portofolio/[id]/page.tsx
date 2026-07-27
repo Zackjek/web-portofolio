@@ -57,7 +57,7 @@ export default async function PortfolioDetailPage({
         </div>
       </header>
 
-      <div className="overflow-hidden rounded-[1.75rem] border border-white/[0.1] bg-[#0a1015] shadow-2xl">
+      <div className="dark-media overflow-hidden rounded-[1.75rem] border border-white/[0.1] bg-[#0a1015] shadow-2xl">
         {pdf ? (
           <div className="grid min-h-[65vh] place-items-center p-8 text-center">
             <div>

@@ -78,7 +78,7 @@ export default function PortfolioExplorer({ items }: { items: PortfolioItem[] })
             }`}
           >
             <Link href={`/portofolio/${item.id}`} className={`grid h-full ${index % 5 === 0 && filteredItems.length > 2 ? "md:grid-cols-[1.15fr_0.85fr]" : ""}`}>
-              <div className={`relative overflow-hidden rounded-xl bg-[#10171c] ${index % 5 === 0 && filteredItems.length > 2 ? "aspect-[16/10] md:aspect-auto md:min-h-[360px]" : "aspect-[16/10]"}`}>
+              <div className={`dark-media relative overflow-hidden rounded-xl bg-[#10171c] ${index % 5 === 0 && filteredItems.length > 2 ? "aspect-[16/10] md:aspect-auto md:min-h-[360px]" : "aspect-[16/10]"}`}>
                 {item.gambar_url ? (
                   <img
                     src={item.gambar_url}
