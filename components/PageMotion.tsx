@@ -88,7 +88,7 @@ export default function PageMotion() {
       <div className="fixed inset-x-0 top-0 z-[70] h-[2px]" aria-hidden="true">
         <div
           ref={progressRef}
-          className="h-full origin-left scale-x-0 bg-gradient-to-r from-lime-300 via-emerald-300 to-cyan-300 shadow-[0_0_16px_rgba(158,240,26,0.55)]"
+          className="page-progress h-full origin-left scale-x-0"
         />
       </div>
       <button

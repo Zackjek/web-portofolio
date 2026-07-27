@@ -25,10 +25,10 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled ? "border-b border-white/[0.08] bg-[#060a0f]/85 backdrop-blur-2xl" : "bg-transparent"}`}>
+    <header className={`site-header fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled ? "site-header-scrolled border-b border-white/[0.08] backdrop-blur-2xl" : "bg-transparent"}`}>
       <nav className="page-shell flex h-20 items-center justify-between" aria-label="Navigasi utama">
         <Link href="/" className="group inline-flex items-center gap-3" aria-label="Kembali ke beranda">
-          <span className="grid h-10 w-10 place-items-center rounded-full border border-white/15 bg-white/[0.04] font-mono text-xs font-black text-lime-300 transition-all group-hover:rotate-6 group-hover:border-lime-300/50 group-hover:bg-lime-300/10">
+          <span className="brand-mark grid h-10 w-10 place-items-center rounded-full border border-white/15 font-mono text-xs font-black transition-all group-hover:rotate-6 group-hover:border-lime-300/50">
             ZM
           </span>
           <span className="hidden leading-tight sm:block">
@@ -45,7 +45,7 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 className={`rounded-full px-4 py-2 text-xs font-semibold transition-all ${
-                  active ? "bg-white text-[#081006]" : "text-zinc-400 hover:bg-white/[0.06] hover:text-white"
+                  active ? "nav-active" : "text-zinc-400 hover:bg-white/[0.06] hover:text-white"
                 }`}
               >
                 {link.label}
@@ -95,7 +95,7 @@ export default function Navbar() {
                   href={link.href}
                   onClick={() => setOpen(false)}
                   className={`flex items-center justify-between rounded-xl px-4 py-3.5 text-sm font-semibold ${
-                    active ? "bg-lime-300 text-[#081006]" : "text-zinc-300 hover:bg-white/[0.06]"
+                    active ? "nav-active" : "text-zinc-300 hover:bg-white/[0.06]"
                   }`}
                 >
                   <span>{link.label}</span>

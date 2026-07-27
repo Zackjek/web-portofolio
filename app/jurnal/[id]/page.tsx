@@ -49,7 +49,7 @@ export default async function JournalDetailPage({
             {journal.judul}
           </h1>
           <div className="mx-auto mt-9 flex w-max items-center gap-3">
-            <span className="grid h-10 w-10 place-items-center rounded-full bg-lime-300 font-mono text-[10px] font-black text-[#071005]">ZM</span>
+            <span className="grid h-10 w-10 place-items-center rounded-full bg-lime-300 font-mono text-[10px] font-black text-[#202127]">ZM</span>
             <span className="text-left">
               <span className="block text-xs font-bold text-white">Muhammad Zaky Mubarok</span>
               <span className="block text-[10px] text-zinc-600">Mahasiswa Informatika</span>

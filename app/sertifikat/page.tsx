@@ -19,7 +19,7 @@ export default async function CertificatePage() {
   const certificates = ((data ?? []) as PortfolioItem[]).filter(isCertificate);
 
   return (
-    <section className="section-pad page-shell pt-36 md:pt-44">
+    <section className="page-intro section-pad page-shell pt-36 md:pt-44">
       <div className="grid gap-10 lg:grid-cols-[1fr_0.62fr] lg:items-end">
         <div>
           <p className="eyebrow">Credentials vault</p>
@@ -27,7 +27,7 @@ export default async function CertificatePage() {
             Bukti dari proses belajar yang nyata.
           </h1>
         </div>
-        <div className="rounded-2xl border border-white/[0.08] bg-white/[0.025] p-5">
+        <div className="summary-panel border border-white/[0.08] p-5">
           <div className="flex items-center justify-between">
             <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-zinc-600">Verified archive</span>
             <span className="flex items-center gap-2 text-xs font-bold text-lime-300">

@@ -19,7 +19,7 @@ export default async function PortfolioPage() {
   const items = ((data ?? []) as PortfolioItem[]).filter((item) => !isCertificate(item));
 
   return (
-    <section className="section-pad page-shell pt-36 md:pt-44">
+    <section className="page-intro section-pad page-shell pt-36 md:pt-44">
       <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
         <div>
           <p className="eyebrow">Selected archive / 2026</p>

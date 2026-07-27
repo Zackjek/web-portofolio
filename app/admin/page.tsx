@@ -329,7 +329,7 @@ export default function AdminPage() {
               <button
                 type="submit"
                 disabled={signingIn || !isSupabaseConfigured || !password}
-                className="flex w-full items-center justify-between rounded-xl bg-lime-300 px-5 py-4 text-sm font-black text-[#071005] transition hover:bg-lime-200 disabled:cursor-not-allowed disabled:opacity-40"
+                className="flex w-full items-center justify-between rounded-xl bg-lime-300 px-5 py-4 text-sm font-black text-[#202127] transition hover:bg-lime-200 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <span>{signingIn ? "Memverifikasi..." : "Masuk ke Admin"}</span>
                 <span>↗</span>
@@ -581,7 +581,7 @@ function AdminPanel({
                 type="button"
                 onClick={() => selectTab(value)}
                 className={`flex w-full items-center gap-3 rounded-xl p-3 text-left transition ${
-                  tab === value ? "bg-lime-300 text-[#071005]" : "text-zinc-400 hover:bg-white/[0.05] hover:text-white"
+                  tab === value ? "bg-lime-300 text-[#202127]" : "text-zinc-400 hover:bg-white/[0.05] hover:text-white"
                 }`}
               >
                 <span className={`grid h-8 w-8 place-items-center rounded-full font-mono text-[9px] ${tab === value ? "bg-black/10" : "border border-white/10"}`}>
@@ -746,7 +746,7 @@ function AdminPanel({
                 </div>
               )}
 
-              <button type="submit" disabled={loading || certificateFiles.length === 0} className="flex w-full items-center justify-between rounded-xl bg-lime-300 px-5 py-4 text-sm font-black text-[#071005] transition hover:bg-lime-200 disabled:cursor-not-allowed disabled:opacity-40">
+              <button type="submit" disabled={loading || certificateFiles.length === 0} className="flex w-full items-center justify-between rounded-xl bg-lime-300 px-5 py-4 text-sm font-black text-[#202127] transition hover:bg-lime-200 disabled:cursor-not-allowed disabled:opacity-40">
                 <span>{loading ? "Sedang memproses..." : `Publikasikan ${certificateFiles.length || ""} sertifikat`}</span>
                 <span>↗</span>
               </button>
@@ -781,7 +781,7 @@ function AdminPanel({
                 <span className="text-xs font-bold text-zinc-400">Cover proyek *</span>
                 <input type="file" accept="image/*" onChange={(event) => setProjectFile(event.target.files?.[0] ?? null)} className="block w-full rounded-xl border border-white/[0.09] bg-[#080d11] p-3 text-xs text-zinc-500 file:mr-4 file:rounded-lg file:border-0 file:bg-white/[0.08] file:px-4 file:py-2 file:text-xs file:font-bold file:text-white" />
               </label>
-              <button type="submit" disabled={loading} className="flex w-full items-center justify-between rounded-xl bg-lime-300 px-5 py-4 text-sm font-black text-[#071005] transition hover:bg-lime-200 disabled:opacity-40">
+              <button type="submit" disabled={loading} className="flex w-full items-center justify-between rounded-xl bg-lime-300 px-5 py-4 text-sm font-black text-[#202127] transition hover:bg-lime-200 disabled:opacity-40">
                 <span>{loading ? "Mengunggah..." : "Publikasikan proyek"}</span><span>↗</span>
               </button>
             </form>
@@ -810,7 +810,7 @@ function AdminPanel({
                   className={`${fieldClass} prose prose-invert max-h-[36rem] min-h-80 max-w-none overflow-y-auto focus:border-lime-300/50`}
                 />
               </label>
-              <button type="submit" disabled={loading} className="flex w-full items-center justify-between rounded-xl bg-lime-300 px-5 py-4 text-sm font-black text-[#071005] transition hover:bg-lime-200 disabled:opacity-40">
+              <button type="submit" disabled={loading} className="flex w-full items-center justify-between rounded-xl bg-lime-300 px-5 py-4 text-sm font-black text-[#202127] transition hover:bg-lime-200 disabled:opacity-40">
                 <span>{loading ? "Menerbitkan..." : "Terbitkan jurnal"}</span><span>↗</span>
               </button>
             </form>

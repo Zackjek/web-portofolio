@@ -112,7 +112,7 @@ function itemHref(item: ManagedItem) {
 function ContentThumbnail({ item }: { item: ManagedItem }) {
   if (item.kind === "jurnal") {
     return (
-      <div className="grid h-full place-items-center bg-[radial-gradient(circle_at_center,rgba(158,240,26,0.08),transparent_68%)]">
+      <div className="accent-radial grid h-full place-items-center">
         <svg
           className="h-9 w-9 text-lime-300/70"
           viewBox="0 0 24 24"
@@ -130,7 +130,7 @@ function ContentThumbnail({ item }: { item: ManagedItem }) {
 
   if (isPdfUrl(item.data.gambar_url)) {
     return (
-      <div className="grid h-full place-items-center bg-[radial-gradient(circle_at_center,rgba(158,240,26,0.08),transparent_68%)]">
+      <div className="accent-radial grid h-full place-items-center">
         <span className="font-mono text-xs font-black tracking-[0.16em] text-lime-300/75">
           PDF
         </span>
@@ -465,7 +465,7 @@ function EditContentModal({
           <button
             type="submit"
             disabled={saving}
-            className="rounded-xl bg-lime-300 px-5 py-3 text-sm font-black text-[#071005] transition hover:bg-lime-200 disabled:cursor-not-allowed disabled:opacity-40"
+            className="rounded-xl bg-lime-300 px-5 py-3 text-sm font-black text-[#202127] transition hover:bg-lime-200 disabled:cursor-not-allowed disabled:opacity-40"
           >
             {saving ? "Menyimpan perubahan..." : "Simpan perubahan"}
           </button>

@@ -10,7 +10,7 @@ type PreviewStatus = "idle" | "loading" | "ready" | "error";
 
 function PreviewPlaceholder({ failed }: { failed: boolean }) {
   return (
-    <div className="absolute inset-0 grid place-items-center bg-[radial-gradient(circle_at_center,rgba(158,240,26,0.08),transparent_65%)]">
+    <div className="accent-radial absolute inset-0 grid place-items-center">
       <div className="text-center">
         <svg
           className={`mx-auto h-12 w-12 ${

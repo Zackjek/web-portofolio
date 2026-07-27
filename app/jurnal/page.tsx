@@ -20,7 +20,7 @@ export default async function JournalPage() {
   const journals = (data ?? []) as JournalItem[];
 
   return (
-    <section className="section-pad page-shell pt-36 md:pt-44">
+    <section className="page-intro section-pad page-shell pt-36 md:pt-44">
       <div className="grid gap-8 lg:grid-cols-[1fr_0.65fr] lg:items-end">
         <div>
           <p className="eyebrow">Notes from the process</p>
@@ -37,7 +37,7 @@ export default async function JournalPage() {
         {journals.length > 0 ? (
           <div className="divide-y divide-white/[0.09] border-y border-white/[0.09]">
             {journals.map((journal, index) => (
-              <article key={journal.id} className="group relative grid gap-5 py-7 md:grid-cols-[4rem_1fr_auto] md:items-center md:py-9">
+              <article key={journal.id} className="journal-row group relative grid gap-5 py-7 md:grid-cols-[4rem_1fr_auto] md:items-center md:py-9">
                 <span className="font-mono text-[10px] tracking-[0.16em] text-zinc-700">
                   {String(index + 1).padStart(2, "0")}
                 </span>
@@ -59,7 +59,7 @@ export default async function JournalPage() {
                 </Link>
                 <div className="relative z-10 flex items-center gap-3">
                   <ShareButton path={`/jurnal/${journal.id}`} title={journal.judul} />
-                  <Link href={`/jurnal/${journal.id}`} className="grid h-10 w-10 place-items-center rounded-full border border-white/10 text-zinc-600 transition-all group-hover:border-lime-300/30 group-hover:bg-lime-300 group-hover:text-[#071005]" aria-label={`Baca ${journal.judul}`}>
+                  <Link href={`/jurnal/${journal.id}`} className="grid h-10 w-10 place-items-center rounded-full border border-white/10 text-zinc-600 transition-all group-hover:border-lime-300/30 group-hover:bg-lime-300 group-hover:text-[#202127]" aria-label={`Baca ${journal.judul}`}>
                     ↗
                   </Link>
                 </div>

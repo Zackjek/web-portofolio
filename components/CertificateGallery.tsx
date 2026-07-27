@@ -48,7 +48,7 @@ export default function CertificateGallery({ items }: { items: PortfolioItem[] }
 
   return (
     <>
-      <div className="mt-10 grid gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.025] p-3 md:grid-cols-[1fr_auto]">
+      <div className="filter-shell mt-10 grid gap-3 border border-white/[0.08] p-3 md:grid-cols-[1fr_auto]">
         <label className="flex items-center gap-3 rounded-xl border border-white/[0.08] bg-[#080d11] px-4 py-3">
           <svg className="h-4 w-4 text-zinc-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
             <circle cx="11" cy="11" r="7" />
@@ -69,7 +69,7 @@ export default function CertificateGallery({ items }: { items: PortfolioItem[] }
               type="button"
               onClick={() => setActiveCategory(category)}
               className={`shrink-0 rounded-xl px-4 py-3 text-xs font-bold transition-all ${
-                activeCategory === category ? "bg-lime-300 text-[#071005]" : "text-zinc-500 hover:bg-white/[0.05] hover:text-white"
+                activeCategory === category ? "bg-lime-300 text-[#202127]" : "text-zinc-500 hover:bg-white/[0.05] hover:text-white"
               }`}
             >
               {category}
@@ -84,7 +84,7 @@ export default function CertificateGallery({ items }: { items: PortfolioItem[] }
           const pdf = isPdfUrl(item.gambar_url);
 
           return (
-            <article key={item.id} className="glass-card interactive-card group rounded-[1.35rem] p-3">
+            <article key={item.id} className="glass-card interactive-card color-card organic-card group p-3">
               <button type="button" onClick={() => setSelected(item)} className="block w-full text-left">
                 <div className="dark-media relative aspect-[4/3] overflow-hidden rounded-xl bg-[#10171c]">
                   {pdf && item.gambar_url ? (
@@ -98,7 +98,7 @@ export default function CertificateGallery({ items }: { items: PortfolioItem[] }
                   <span className="absolute left-3 top-3 rounded-full border border-white/15 bg-black/45 px-3 py-1.5 font-mono text-[8px] uppercase tracking-[0.15em] text-white backdrop-blur">
                     {meta.year || `CERT ${String(index + 1).padStart(2, "0")}`}
                   </span>
-                  <span className="absolute bottom-3 right-3 grid h-10 w-10 place-items-center rounded-full bg-lime-300 text-[#071005] opacity-0 transition-all group-hover:opacity-100">
+                  <span className="absolute bottom-3 right-3 grid h-10 w-10 place-items-center rounded-full bg-lime-300 text-[#202127] opacity-0 transition-all group-hover:opacity-100">
                     +
                   </span>
                 </div>
@@ -161,7 +161,7 @@ export default function CertificateGallery({ items }: { items: PortfolioItem[] }
               </div>
               <div className="mt-auto space-y-2 pt-8">
                 {selected.gambar_url && (
-                  <a href={selected.gambar_url} target="_blank" rel="noreferrer" className="flex w-full items-center justify-between rounded-xl bg-lime-300 px-4 py-3 text-sm font-black text-[#071005]">
+                  <a href={selected.gambar_url} target="_blank" rel="noreferrer" className="flex w-full items-center justify-between rounded-xl bg-lime-300 px-4 py-3 text-sm font-black text-[#202127]">
                     Buka file asli <span>↗</span>
                   </a>
                 )}
