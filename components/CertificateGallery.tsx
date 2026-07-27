@@ -4,6 +4,7 @@
 import { useEffect, useMemo, useState } from "react";
 import PdfThumbnail from "@/components/PdfThumbnail";
 import {
+  getCertificateDescription,
   getCertificateMeta,
   isPdfUrl,
   type PortfolioItem,
@@ -11,12 +12,12 @@ import {
 
 export default function CertificateGallery({ items }: { items: PortfolioItem[] }) {
   const [query, setQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState("Semua");
+  const [activeCategory, setActiveCategory] = useState("All");
   const [selected, setSelected] = useState<PortfolioItem | null>(null);
 
   const categories = useMemo(() => {
     const values = items.map((item) => getCertificateMeta(item).category).filter(Boolean);
-    return ["Semua", ...Array.from(new Set(values))];
+    return ["All", ...Array.from(new Set(values))];
   }, [items]);
 
   const filteredItems = useMemo(() => {
@@ -26,7 +27,7 @@ export default function CertificateGallery({ items }: { items: PortfolioItem[] }
       const searchable = `${item.judul} ${item.deskripsi ?? ""} ${meta.issuer} ${meta.year} ${meta.category}`.toLowerCase();
       return (
         (!normalizedQuery || searchable.includes(normalizedQuery)) &&
-        (activeCategory === "Semua" || meta.category === activeCategory)
+        (activeCategory === "All" || meta.category === activeCategory)
       );
     });
   }, [activeCategory, items, query]);
@@ -54,11 +55,11 @@ export default function CertificateGallery({ items }: { items: PortfolioItem[] }
             <circle cx="11" cy="11" r="7" />
             <path d="m20 20-4-4" />
           </svg>
-          <span className="sr-only">Cari sertifikat</span>
+          <span className="sr-only">Search credentials</span>
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Cari judul, penerbit, atau tahun..."
+            placeholder="Search by title, issuer, or year..."
             className="w-full bg-transparent text-sm text-white placeholder:text-zinc-700 focus:outline-none"
           />
         </label>
@@ -107,7 +108,7 @@ export default function CertificateGallery({ items }: { items: PortfolioItem[] }
                   <h2 className="mt-2 line-clamp-2 text-lg font-black leading-6 tracking-tight text-white">{item.judul}</h2>
                   <div className="mt-4 flex items-center justify-between border-t border-white/[0.07] pt-4">
                     <span className="text-xs text-zinc-600">{meta.category}</span>
-                    <span className="text-xs font-bold text-zinc-500 transition-colors group-hover:text-white">Lihat detail ↗</span>
+                    <span className="text-xs font-bold text-zinc-500 transition-colors group-hover:text-white">View details ↗</span>
                   </div>
                 </div>
               </button>
@@ -119,19 +120,19 @@ export default function CertificateGallery({ items }: { items: PortfolioItem[] }
       {filteredItems.length === 0 && (
         <div className="mt-8 rounded-2xl border border-dashed border-white/10 py-20 text-center">
           <p className="font-mono text-xs uppercase tracking-wider text-zinc-600">
-            {items.length === 0 ? "Belum ada sertifikat yang diunggah" : "Sertifikat tidak ditemukan"}
+            {items.length === 0 ? "No credentials have been uploaded yet" : "No credentials found"}
           </p>
-          {(query || activeCategory !== "Semua") && (
-            <button type="button" onClick={() => { setQuery(""); setActiveCategory("Semua"); }} className="mt-4 text-sm font-bold text-lime-300">
-              Reset pencarian
+          {(query || activeCategory !== "All") && (
+            <button type="button" onClick={() => { setQuery(""); setActiveCategory("All"); }} className="mt-4 text-sm font-bold text-lime-300">
+              Reset search
             </button>
           )}
         </div>
       )}
 
       {selected && (
-        <div className="fixed inset-0 z-[100] grid place-items-center bg-black/85 p-3 backdrop-blur-xl sm:p-6" role="dialog" aria-modal="true" aria-label={`Pratinjau ${selected.judul}`}>
-          <button type="button" onClick={() => setSelected(null)} className="absolute inset-0 cursor-default" aria-label="Tutup pratinjau" />
+        <div className="fixed inset-0 z-[100] grid place-items-center bg-black/85 p-3 backdrop-blur-xl sm:p-6" role="dialog" aria-modal="true" aria-label={`Preview ${selected.judul}`}>
+          <button type="button" onClick={() => setSelected(null)} className="absolute inset-0 cursor-default" aria-label="Close preview" />
           <div className="relative z-10 flex max-h-[94vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl border border-white/12 bg-[#0a1015] shadow-2xl lg:grid lg:grid-cols-[1fr_320px]">
             <div className="relative min-h-[45vh] bg-black lg:min-h-[75vh]">
               {isPdfUrl(selected.gambar_url) ? (
@@ -143,31 +144,31 @@ export default function CertificateGallery({ items }: { items: PortfolioItem[] }
               ) : null}
             </div>
             <div className="flex max-h-[44vh] flex-col overflow-y-auto border-t border-white/10 p-6 lg:max-h-none lg:border-l lg:border-t-0">
-              <button type="button" onClick={() => setSelected(null)} className="ml-auto grid h-9 w-9 place-items-center rounded-full border border-white/10 text-zinc-500 transition-colors hover:text-white" aria-label="Tutup">
+              <button type="button" onClick={() => setSelected(null)} className="ml-auto grid h-9 w-9 place-items-center rounded-full border border-white/10 text-zinc-500 transition-colors hover:text-white" aria-label="Close">
                 ×
               </button>
               <p className="mt-6 font-mono text-[9px] uppercase tracking-[0.2em] text-lime-300">{getCertificateMeta(selected).issuer}</p>
               <h2 className="mt-3 text-2xl font-black tracking-tight text-white">{selected.judul}</h2>
-              <p className="mt-5 text-sm leading-7 text-zinc-500">{selected.deskripsi || "Kredensial dan bukti pencapaian kompetensi."}</p>
+              <p className="mt-5 text-sm leading-7 text-zinc-500">{getCertificateDescription(selected)}</p>
               <div className="mt-6 grid grid-cols-2 gap-3">
                 <div className="rounded-xl border border-white/[0.08] p-3">
-                  <p className="font-mono text-[8px] uppercase tracking-wider text-zinc-700">Tahun</p>
+                  <p className="font-mono text-[8px] uppercase tracking-wider text-zinc-700">Year</p>
                   <p className="mt-1 text-sm font-bold text-white">{getCertificateMeta(selected).year || "—"}</p>
                 </div>
                 <div className="rounded-xl border border-white/[0.08] p-3">
-                  <p className="font-mono text-[8px] uppercase tracking-wider text-zinc-700">Kategori</p>
+                  <p className="font-mono text-[8px] uppercase tracking-wider text-zinc-700">Category</p>
                   <p className="mt-1 text-sm font-bold text-white">{getCertificateMeta(selected).category}</p>
                 </div>
               </div>
               <div className="mt-auto space-y-2 pt-8">
                 {selected.gambar_url && (
                   <a href={selected.gambar_url} target="_blank" rel="noreferrer" className="flex w-full items-center justify-between rounded-xl bg-lime-300 px-4 py-3 text-sm font-black text-[#202127]">
-                    Buka file asli <span>↗</span>
+                    Open original file <span>↗</span>
                   </a>
                 )}
                 {selected.link_proyek && (
                   <a href={selected.link_proyek} target="_blank" rel="noreferrer" className="flex w-full items-center justify-between rounded-xl border border-white/10 px-4 py-3 text-sm font-bold text-white">
-                    Verifikasi kredensial <span>↗</span>
+                    Verify credential <span>↗</span>
                   </a>
                 )}
               </div>

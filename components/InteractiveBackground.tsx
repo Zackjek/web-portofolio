@@ -23,7 +23,6 @@ export default function InteractiveBackground() {
 
   return (
     <div className="fixed inset-0 z-0 pointer-events-none" aria-hidden="true">
-      <div className="absolute inset-0 grid-surface" />
       <div className="absolute inset-0 pointer-light" />
       <div className="absolute inset-0 noise-surface mix-blend-soft-light" />
       <div className="ambient-lavender absolute -top-52 -left-48 h-[34rem] w-[34rem] rounded-full blur-[140px]" />

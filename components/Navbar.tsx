@@ -6,10 +6,10 @@ import { useEffect, useState } from "react";
 import ThemeToggle from "@/components/ThemeToggle";
 
 const links = [
-  { href: "/", label: "Beranda" },
-  { href: "/portofolio", label: "Karya" },
-  { href: "/sertifikat", label: "Sertifikat" },
-  { href: "/jurnal", label: "Jurnal" },
+  { href: "/", label: "Home" },
+  { href: "/portofolio", label: "Work" },
+  { href: "/sertifikat", label: "Credentials" },
+  { href: "/jurnal", label: "Journal" },
 ];
 
 export default function Navbar() {
@@ -26,8 +26,8 @@ export default function Navbar() {
 
   return (
     <header className={`site-header fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled ? "site-header-scrolled border-b border-white/[0.08] backdrop-blur-2xl" : "bg-transparent"}`}>
-      <nav className="page-shell flex h-20 items-center justify-between" aria-label="Navigasi utama">
-        <Link href="/" className="group inline-flex items-center gap-3" aria-label="Kembali ke beranda">
+      <nav className="page-shell flex h-20 items-center justify-between" aria-label="Main navigation">
+        <Link href="/" className="group inline-flex items-center gap-3" aria-label="Back to home">
           <span className="brand-mark grid h-10 w-10 place-items-center rounded-full border border-white/15 font-mono text-xs font-black transition-all group-hover:rotate-6 group-hover:border-lime-300/50">
             ZM
           </span>
@@ -63,7 +63,7 @@ export default function Navbar() {
             className="hidden items-center gap-2 rounded-full border border-lime-300/25 bg-lime-300/[0.08] px-4 py-2.5 text-xs font-bold text-lime-200 transition-all hover:border-lime-300/60 hover:bg-lime-300/15 sm:inline-flex"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-lime-300 pulse-dot" />
-            Mari kolaborasi
+            Let&apos;s collaborate
           </a>
           <button
             type="button"
@@ -71,7 +71,7 @@ export default function Navbar() {
             className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-white md:hidden"
             aria-expanded={open}
             aria-controls="mobile-menu"
-            aria-label={open ? "Tutup menu" : "Buka menu"}
+            aria-label={open ? "Close menu" : "Open menu"}
           >
             <span className="relative h-4 w-5">
               <span className={`absolute left-0 top-1 h-px w-5 bg-current transition-transform ${open ? "translate-y-1 rotate-45" : ""}`} />

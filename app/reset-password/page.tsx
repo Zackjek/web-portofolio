@@ -28,11 +28,11 @@ function recoveryErrorFromUrl() {
   const error = hash.get("error") ?? query.get("error");
 
   if (errorCode === "otp_expired") {
-    return "Link reset sudah kedaluwarsa atau pernah digunakan. Minta email reset baru dari halaman Admin Studio.";
+    return "This recovery link has expired or was already used. Request a new recovery email from Admin Studio.";
   }
 
   if (error || errorCode) {
-    return "Link reset tidak valid. Minta email reset baru dari halaman Admin Studio.";
+    return "This recovery link is invalid. Request a new recovery email from Admin Studio.";
   }
 
   return "";
@@ -45,24 +45,24 @@ function updateErrorMessage(message: string) {
     normalizedMessage.includes("same password") ||
     normalizedMessage.includes("different from the old password")
   ) {
-    return "Password baru harus berbeda dari password sebelumnya.";
+    return "The new password must be different from the previous password.";
   }
 
   if (
     normalizedMessage.includes("weak password") ||
     normalizedMessage.includes("at least")
   ) {
-    return "Password belum memenuhi aturan keamanan. Gunakan minimal 8 karakter dengan kombinasi yang sulit ditebak.";
+    return "The password does not meet the security requirements. Use at least 8 characters and choose a hard-to-guess combination.";
   }
 
   if (
     normalizedMessage.includes("session") ||
     normalizedMessage.includes("jwt")
   ) {
-    return "Sesi reset sudah berakhir. Minta email reset baru dari halaman Admin Studio.";
+    return "The recovery session has ended. Request a new recovery email from Admin Studio.";
   }
 
-  return "Password belum berhasil disimpan. Periksa koneksi lalu coba lagi.";
+  return "The password could not be saved. Check your connection and try again.";
 }
 
 export default function ResetPasswordPage() {
@@ -87,7 +87,7 @@ export default function ResetPasswordPage() {
         setRecoveryState("invalid");
         setMessage(
           urlError ||
-            "Sesi reset tidak ditemukan. Link mungkin sudah digunakan atau kedaluwarsa.",
+            "No recovery session was found. The link may have expired or already been used.",
         );
         setMessageTone("error");
         return;
@@ -96,7 +96,7 @@ export default function ResetPasswordPage() {
       const email = session.user.email?.toLowerCase() ?? "";
       if (email !== ADMIN_EMAIL) {
         setRecoveryState("denied");
-        setMessage("Akun pada link ini tidak memiliki akses Admin Studio.");
+        setMessage("The account associated with this link does not have Admin Studio access.");
         setMessageTone("error");
         void supabase.auth.signOut({ scope: "local" });
         return;
@@ -110,7 +110,7 @@ export default function ResetPasswordPage() {
 
     if (!isSupabaseConfigured) {
       setRecoveryState("invalid");
-      setMessage("Konfigurasi Supabase belum tersedia pada deployment ini.");
+      setMessage("Supabase is not configured for this deployment.");
       setMessageTone("error");
       return;
     }
@@ -143,7 +143,7 @@ export default function ResetPasswordPage() {
           if (!active) return;
           setRecoveryState("invalid");
           setMessage(
-            "Sesi reset tidak dapat diperiksa. Minta email reset baru dari halaman Admin Studio.",
+            "The recovery session could not be verified. Request a new recovery email from Admin Studio.",
           );
           setMessageTone("error");
           return;
@@ -155,7 +155,7 @@ export default function ResetPasswordPage() {
         if (!active) return;
         setRecoveryState("invalid");
         setMessage(
-          "Sesi reset tidak dapat diperiksa. Minta email reset baru dari halaman Admin Studio.",
+          "The recovery session could not be verified. Request a new recovery email from Admin Studio.",
         );
         setMessageTone("error");
       });
@@ -170,13 +170,13 @@ export default function ResetPasswordPage() {
     event.preventDefault();
 
     if (password.length < 8) {
-      setMessage("Gunakan password minimal 8 karakter.");
+      setMessage("Use a password with at least 8 characters.");
       setMessageTone("error");
       return;
     }
 
     if (password !== confirmation) {
-      setMessage("Konfirmasi password belum sama.");
+      setMessage("The password confirmation does not match.");
       setMessageTone("error");
       return;
     }
@@ -201,7 +201,7 @@ export default function ResetPasswordPage() {
       setMessage("");
       await supabase.auth.signOut({ scope: "local" });
     } catch {
-      setMessage("Password belum berhasil disimpan. Coba lagi nanti.");
+      setMessage("The password could not be saved. Please try again later.");
       setMessageTone("error");
     } finally {
       setUpdating(false);
@@ -214,7 +214,7 @@ export default function ResetPasswordPage() {
         <div className="text-center">
           <span className="mx-auto block h-8 w-8 animate-spin rounded-full border-2 border-white/10 border-t-lime-300" />
           <p className="mt-4 font-mono text-[9px] uppercase tracking-[0.18em] text-zinc-600">
-            Memeriksa link reset
+            Checking recovery link
           </p>
         </div>
       </section>
@@ -229,20 +229,20 @@ export default function ResetPasswordPage() {
             ✓
           </span>
           <p className="mt-7 font-mono text-[9px] uppercase tracking-[0.18em] text-lime-300">
-            Password tersimpan
+            Password saved
           </p>
           <h1 className="mt-2 text-3xl font-black tracking-[-0.04em] text-white">
-            Password admin sudah dibuat
+            Your admin password is ready
           </h1>
           <p className="mt-4 text-sm leading-7 text-zinc-500">
-            Sesi reset sudah ditutup. Sekarang masuk menggunakan password baru
-            yang barusan kamu buat.
+            The recovery session has been closed. You can now sign in with the
+            password you just created.
           </p>
           <Link
             href="/admin"
             className="mt-8 inline-flex w-full items-center justify-between rounded-xl bg-lime-300 px-5 py-4 text-sm font-black text-[#202127] transition hover:bg-lime-200"
           >
-            <span>Masuk ke Admin Studio</span>
+            <span>Sign in to Admin Studio</span>
             <span>↗</span>
           </Link>
         </div>
@@ -258,10 +258,10 @@ export default function ResetPasswordPage() {
             !
           </span>
           <p className="mt-7 font-mono text-[9px] uppercase tracking-[0.18em] text-amber-200">
-            Link tidak dapat digunakan
+            Link unavailable
           </p>
           <h1 className="mt-2 text-3xl font-black tracking-[-0.04em] text-white">
-            Minta link reset baru
+            Request a new recovery link
           </h1>
           <div
             role="alert"
@@ -270,14 +270,14 @@ export default function ResetPasswordPage() {
             {message}
           </div>
           <p className="mt-5 text-sm leading-7 text-zinc-500">
-            Buka Admin Studio, pilih tombol untuk membuat password, lalu buka
-            email terbaru satu kali. Email lama tidak dapat dipakai ulang.
+            Open Admin Studio, request a new recovery email, then use the link
+            in the newest message once. Older links cannot be reused.
           </p>
           <Link
             href="/admin"
             className="mt-7 inline-flex w-full items-center justify-between rounded-xl border border-white/10 px-5 py-4 text-sm font-bold text-zinc-300 transition hover:border-white/20 hover:text-white"
           >
-            <span>Kembali ke Admin Studio</span>
+            <span>Back to Admin Studio</span>
             <span>→</span>
           </Link>
         </div>
@@ -305,11 +305,11 @@ export default function ResetPasswordPage() {
           Secure password recovery
         </p>
         <h1 className="mt-2 text-3xl font-black tracking-[-0.04em] text-white">
-          Buat password admin baru
+          Create a new admin password
         </h1>
         <p className="mt-4 text-sm leading-7 text-zinc-500">
-          Gunakan minimal 8 karakter. Password disimpan sebagai hash dan
-          diverifikasi langsung oleh Supabase Auth.
+          Use at least 8 characters. Your password is stored as a secure hash
+          and verified directly by Supabase Auth.
         </p>
 
         {message && (
@@ -328,7 +328,7 @@ export default function ResetPasswordPage() {
         <form onSubmit={updatePassword} className="mt-7 space-y-4">
           <label className="block space-y-2">
             <span className="text-xs font-bold text-zinc-400">
-              Password baru
+              New password
             </span>
             <span className="relative block">
               <input
@@ -341,25 +341,25 @@ export default function ResetPasswordPage() {
                 required
                 autoFocus
                 className={`${fieldClass} pr-24`}
-                placeholder="Minimal 8 karakter"
+                placeholder="At least 8 characters"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((current) => !current)}
                 className="absolute inset-y-0 right-3 my-auto h-fit rounded-lg px-2 py-1 text-[10px] font-bold text-zinc-600 transition hover:text-lime-300"
                 aria-label={
-                  showPassword ? "Sembunyikan password" : "Tampilkan password"
+                  showPassword ? "Hide password" : "Show password"
                 }
                 aria-pressed={showPassword}
               >
-                {showPassword ? "Sembunyikan" : "Lihat"}
+                {showPassword ? "Hide" : "Show"}
               </button>
             </span>
           </label>
 
           <label className="block space-y-2">
             <span className="text-xs font-bold text-zinc-400">
-              Ulangi password baru
+              Confirm new password
             </span>
             <input
               type={showPassword ? "text" : "password"}
@@ -370,7 +370,7 @@ export default function ResetPasswordPage() {
               minLength={8}
               required
               className={fieldClass}
-              placeholder="Ketik ulang password"
+              placeholder="Re-enter your password"
             />
           </label>
 
@@ -383,7 +383,7 @@ export default function ResetPasswordPage() {
             }
             className="flex w-full items-center justify-between rounded-xl bg-lime-300 px-5 py-4 text-sm font-black text-[#202127] transition hover:bg-lime-200 disabled:cursor-not-allowed disabled:opacity-40"
           >
-            <span>{updating ? "Menyimpan..." : "Simpan Password Baru"}</span>
+            <span>{updating ? "Saving..." : "Save New Password"}</span>
             <span>↗</span>
           </button>
         </form>

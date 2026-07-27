@@ -64,9 +64,9 @@ const fieldClass =
   "w-full rounded-xl border border-white/[0.09] bg-[#080d11] px-4 py-3 text-sm text-white placeholder:text-zinc-700 transition focus:border-lime-300/50 focus:outline-none";
 
 const kindLabel: Record<Exclude<ContentKind, "semua">, string> = {
-  sertifikat: "Sertifikat",
-  portofolio: "Karya",
-  jurnal: "Jurnal",
+  sertifikat: "Credential",
+  portofolio: "Work",
+  jurnal: "Journal entry",
 };
 
 function errorMessage(error: unknown) {
@@ -79,7 +79,7 @@ function errorMessage(error: unknown) {
   ) {
     return error.message;
   }
-  return "Terjadi kesalahan yang tidak diketahui.";
+  return "An unknown error occurred.";
 }
 
 function itemTitle(item: ManagedItem) {
@@ -100,7 +100,7 @@ function itemSummary(item: ManagedItem) {
     const meta = getCertificateMeta(item.data);
     return `${meta.issuer} • ${meta.category}${meta.year ? ` • ${meta.year}` : ""}`;
   }
-  return item.data.deskripsi || "Belum ada deskripsi proyek.";
+  return item.data.deskripsi || "No project description is available yet.";
 }
 
 function itemHref(item: ManagedItem) {
@@ -184,7 +184,7 @@ function EditContentModal({
   const [issuer, setIssuer] = useState(certificateMeta?.issuer ?? "");
   const [year, setYear] = useState(certificateMeta?.year ?? "");
   const [category, setCategory] = useState(
-    certificateMeta?.category ?? "Pelatihan",
+    certificateMeta?.category ?? "Training",
   );
   const [replacementFile, setReplacementFile] = useState<File | null>(null);
   const [validationMessage, setValidationMessage] = useState("");
@@ -198,7 +198,7 @@ function EditContentModal({
   const submit = (event: React.FormEvent) => {
     event.preventDefault();
     if (!title.trim()) {
-      setValidationMessage("Judul wajib diisi.");
+      setValidationMessage("A title is required.");
       return;
     }
 
@@ -212,14 +212,14 @@ function EditContentModal({
       if (!validType) {
         setValidationMessage(
           item.kind === "sertifikat"
-            ? "File pengganti harus berupa gambar atau PDF."
-            : "Cover pengganti harus berupa gambar.",
+            ? "The replacement file must be an image or PDF."
+            : "The replacement cover must be an image.",
         );
         return;
       }
 
       if (replacementFile.size > 20 * 1024 * 1024) {
-        setValidationMessage("Ukuran file pengganti maksimal 20 MB.");
+        setValidationMessage("The replacement file must be 20 MB or smaller.");
         return;
       }
     }
@@ -227,7 +227,7 @@ function EditContentModal({
     if (item.kind === "jurnal") {
       const content = editorRef.current?.innerHTML.trim() ?? "";
       if (!content) {
-        setValidationMessage("Isi jurnal wajib diisi.");
+        setValidationMessage("Journal content is required.");
         return;
       }
       onSave({ kind: "jurnal", title: title.trim(), content });
@@ -235,13 +235,13 @@ function EditContentModal({
     }
 
     if (!description.trim()) {
-      setValidationMessage("Deskripsi wajib diisi.");
+      setValidationMessage("A description is required.");
       return;
     }
 
     if (item.kind === "sertifikat") {
       if (!issuer.trim() || !year.trim() || !category.trim()) {
-        setValidationMessage("Penerbit, tahun, dan kategori wajib diisi.");
+        setValidationMessage("An issuer, year, and category are required.");
         return;
       }
       onSave({
@@ -278,7 +278,7 @@ function EditContentModal({
         type="button"
         className="absolute inset-0 cursor-default"
         onClick={saving ? undefined : onClose}
-        aria-label="Tutup editor"
+        aria-label="Close editor"
       />
       <form
         onSubmit={submit}
@@ -290,7 +290,7 @@ function EditContentModal({
               Edit {kindLabel[item.kind]}
             </p>
             <h2 className="mt-2 text-2xl font-black tracking-tight text-white">
-              Perbarui konten
+              Update content
             </h2>
           </div>
           <button
@@ -298,7 +298,7 @@ function EditContentModal({
             disabled={saving}
             onClick={onClose}
             className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-white/10 text-zinc-500 transition hover:text-white disabled:opacity-40"
-            aria-label="Tutup"
+            aria-label="Close"
           >
             ×
           </button>
@@ -306,7 +306,7 @@ function EditContentModal({
 
         <div className="mt-6 space-y-5">
           <label className="block space-y-2">
-            <span className="text-xs font-bold text-zinc-400">Judul *</span>
+            <span className="text-xs font-bold text-zinc-400">Title *</span>
             <input
               value={title}
               onChange={(event) => setTitle(event.target.value)}
@@ -317,7 +317,7 @@ function EditContentModal({
           {item.kind === "jurnal" ? (
             <label className="block space-y-2">
               <span className="flex items-center justify-between gap-3 text-xs font-bold text-zinc-400">
-                <span>Isi jurnal *</span>
+                <span>Journal content *</span>
                 <span className="rounded-full bg-lime-300/10 px-2 py-1 font-mono text-[8px] uppercase tracking-wider text-lime-300">
                   Rich text
                 </span>
@@ -333,7 +333,7 @@ function EditContentModal({
             <>
               <label className="block space-y-2">
                 <span className="text-xs font-bold text-zinc-400">
-                  Deskripsi *
+                  Description *
                 </span>
                 <textarea
                   value={description}
@@ -346,7 +346,7 @@ function EditContentModal({
                 <div className="grid gap-4 md:grid-cols-3">
                   <label className="space-y-2 md:col-span-2">
                     <span className="text-xs font-bold text-zinc-400">
-                      Penerbit *
+                      Issuer *
                     </span>
                     <input
                       value={issuer}
@@ -356,7 +356,7 @@ function EditContentModal({
                   </label>
                   <label className="space-y-2">
                     <span className="text-xs font-bold text-zinc-400">
-                      Tahun *
+                      Year *
                     </span>
                     <input
                       value={year}
@@ -367,26 +367,26 @@ function EditContentModal({
                   </label>
                   <label className="space-y-2 md:col-span-3">
                     <span className="text-xs font-bold text-zinc-400">
-                      Kategori *
+                      Category *
                     </span>
                     <select
                       value={category}
                       onChange={(event) => setCategory(event.target.value)}
                       className={fieldClass}
                     >
-                      <option>Pelatihan</option>
-                      <option>Kompetisi</option>
-                      <option>Konferensi</option>
-                      <option>Organisasi</option>
-                      <option>Akademik</option>
-                      <option>Lainnya</option>
+                      <option>Training</option>
+                      <option>Competition</option>
+                      <option>Conference</option>
+                      <option>Organization</option>
+                      <option>Academic</option>
+                      <option>Other</option>
                     </select>
                   </label>
                 </div>
               ) : (
                 <label className="block space-y-2">
                   <span className="text-xs font-bold text-zinc-400">
-                    Teknologi
+                    Technologies
                   </span>
                   <input
                     value={technologies}
@@ -400,8 +400,8 @@ function EditContentModal({
               <label className="block space-y-2">
                 <span className="text-xs font-bold text-zinc-400">
                   {item.kind === "sertifikat"
-                    ? "Tautan verifikasi"
-                    : "Tautan proyek"}
+                    ? "Verification link"
+                    : "Project link"}
                 </span>
                 <input
                   type="url"
@@ -414,9 +414,9 @@ function EditContentModal({
 
               <label className="block space-y-2">
                 <span className="text-xs font-bold text-zinc-400">
-                  Ganti {item.kind === "sertifikat" ? "file" : "cover"}
+                  Replace {item.kind === "sertifikat" ? "file" : "cover"}
                   <span className="ml-1 font-normal text-zinc-700">
-                    (opsional)
+                    (optional)
                   </span>
                 </span>
                 <input
@@ -460,14 +460,14 @@ function EditContentModal({
             onClick={onClose}
             className="rounded-xl border border-white/10 px-5 py-3 text-sm font-bold text-zinc-400 transition hover:text-white disabled:opacity-40"
           >
-            Batal
+            Cancel
           </button>
           <button
             type="submit"
             disabled={saving}
             className="rounded-xl bg-lime-300 px-5 py-3 text-sm font-black text-[#202127] transition hover:bg-lime-200 disabled:cursor-not-allowed disabled:opacity-40"
           >
-            {saving ? "Menyimpan perubahan..." : "Simpan perubahan"}
+            {saving ? "Saving changes..." : "Save changes"}
           </button>
         </div>
       </form>
@@ -493,50 +493,50 @@ function DeleteContentModal({
   onClose: () => void;
   onDelete: () => void;
 }) {
-  const confirmed = phrase.trim().toUpperCase() === "HAPUS";
+  const confirmed = phrase.trim().toUpperCase() === "DELETE";
 
   return createPortal(
     <div
       className="fixed inset-0 z-[130] grid place-items-center bg-black/90 p-4 backdrop-blur-xl"
       role="alertdialog"
       aria-modal="true"
-      aria-label={`Hapus ${item.data.judul}`}
+      aria-label={`Delete ${item.data.judul}`}
     >
       <button
         type="button"
         className="absolute inset-0 cursor-default"
         onClick={deleting ? undefined : onClose}
-        aria-label="Batal menghapus"
+        aria-label="Cancel deletion"
       />
       <div className="relative z-10 w-full max-w-lg rounded-2xl border border-red-400/20 bg-[#0d1013] p-6 shadow-2xl md:p-8">
         <span className="grid h-12 w-12 place-items-center rounded-full border border-red-400/20 bg-red-400/[0.08] text-xl text-red-300">
           !
         </span>
         <p className="mt-6 font-mono text-[9px] uppercase tracking-[0.18em] text-red-300">
-          Penghapusan permanen
+          Permanent deletion
         </p>
         <h2 className="mt-2 text-2xl font-black tracking-tight text-white">
-          Hapus {kindLabel[item.kind]} ini?
+          Delete this {kindLabel[item.kind].toLowerCase()}?
         </h2>
         <p className="mt-4 text-sm leading-7 text-zinc-500">
           <span className="font-bold text-zinc-300">“{item.data.judul}”</span>{" "}
-          akan dihapus dari database
+          will be deleted from the database
           {item.kind !== "jurnal"
-            ? " beserta file medianya di penyimpanan"
+            ? " along with its media file in storage"
             : ""}
-          . Tindakan ini tidak dapat dibatalkan.
+          . This action cannot be undone.
         </p>
 
         <label className="mt-6 block space-y-2">
           <span className="text-xs font-bold text-zinc-400">
-            Ketik <span className="text-red-300">HAPUS</span> untuk melanjutkan
+            Type <span className="text-red-300">DELETE</span> to continue
           </span>
           <input
             value={phrase}
             onChange={(event) => onPhraseChange(event.target.value)}
             autoComplete="off"
             className={`${fieldClass} border-red-400/15 focus:border-red-300/50`}
-            placeholder="HAPUS"
+            placeholder="DELETE"
           />
         </label>
 
@@ -553,7 +553,7 @@ function DeleteContentModal({
             onClick={onClose}
             className="rounded-xl border border-white/10 px-5 py-3 text-sm font-bold text-zinc-400 transition hover:text-white disabled:opacity-40"
           >
-            Batalkan
+            Cancel
           </button>
           <button
             type="button"
@@ -561,7 +561,7 @@ function DeleteContentModal({
             onClick={onDelete}
             className="rounded-xl bg-red-400 px-5 py-3 text-sm font-black text-[#190606] transition hover:bg-red-300 disabled:cursor-not-allowed disabled:opacity-35"
           >
-            {deleting ? "Sedang menghapus..." : "Hapus permanen"}
+            {deleting ? "Deleting..." : "Delete permanently"}
           </button>
         </div>
       </div>
@@ -626,7 +626,7 @@ export default function AdminContentManager({
         ),
       );
     } catch (loadError) {
-      setError(`Gagal memuat konten: ${errorMessage(loadError)}`);
+      setError(`Failed to load content: ${errorMessage(loadError)}`);
     } finally {
       setLoading(false);
       setReloading(false);
@@ -709,7 +709,7 @@ export default function AdminContentManager({
           ),
         );
         setEditing(null);
-        setNotice(`Jurnal “${draft.title}” berhasil diperbarui.`);
+        setNotice(`Journal entry “${draft.title}” updated successfully.`);
         return;
       }
 
@@ -768,7 +768,7 @@ export default function AdminContentManager({
           const cleanup = await removeMedia(editing.data.gambar_url);
           if (cleanup.error) {
             cleanupWarning =
-              " Data sudah diperbarui, tetapi file lama gagal dibersihkan.";
+              " The content was updated, but the previous file could not be removed.";
           }
         }
 
@@ -783,18 +783,18 @@ export default function AdminContentManager({
         );
         setEditing(null);
         setNotice(
-          `${kindLabel[draft.kind]} “${draft.title}” berhasil diperbarui.${cleanupWarning}`,
+          `${kindLabel[draft.kind]} “${draft.title}” updated successfully.${cleanupWarning}`,
         );
       }
     } catch (saveError) {
-      setError(`Gagal menyimpan perubahan: ${errorMessage(saveError)}`);
+      setError(`Failed to save changes: ${errorMessage(saveError)}`);
     } finally {
       setSaving(false);
     }
   };
 
   const deleteContent = async () => {
-    if (!deleting || deletePhrase.trim().toUpperCase() !== "HAPUS") return;
+    if (!deleting || deletePhrase.trim().toUpperCase() !== "DELETE") return;
     setDeletingNow(true);
     setError("");
     setNotice("");
@@ -810,7 +810,7 @@ export default function AdminContentManager({
       if (deleteError) throw deleteError;
       if (!data || data.length === 0) {
         throw new Error(
-          "Tidak ada data yang terhapus. Periksa izin DELETE pada policy Supabase.",
+          "No data was deleted. Check the DELETE permission in the Supabase policy.",
         );
       }
 
@@ -819,7 +819,7 @@ export default function AdminContentManager({
         const cleanup = await removeMedia(deleting.data.gambar_url);
         if (cleanup.error) {
           cleanupWarning =
-            " Record sudah terhapus, tetapi file medianya gagal dibersihkan.";
+            " The record was deleted, but its media file could not be removed.";
         }
       }
 
@@ -832,10 +832,10 @@ export default function AdminContentManager({
       setDeleting(null);
       setDeletePhrase("");
       setNotice(
-        `${kindLabel[deletedKind]} “${deletedTitle}” berhasil dihapus.${cleanupWarning}`,
+        `${kindLabel[deletedKind]} “${deletedTitle}” deleted successfully.${cleanupWarning}`,
       );
     } catch (deleteError) {
-      setError(`Gagal menghapus konten: ${errorMessage(deleteError)}`);
+      setError(`Failed to delete content: ${errorMessage(deleteError)}`);
     } finally {
       setDeletingNow(false);
     }
@@ -850,11 +850,11 @@ export default function AdminContentManager({
               Content control center
             </p>
             <h2 className="mt-2 text-2xl font-black tracking-tight text-white">
-              Kelola semua konten
+              Manage all content
             </h2>
             <p className="mt-2 max-w-xl text-sm leading-6 text-zinc-600">
-              Cari, perbarui, pratinjau, atau hapus konten yang sudah terbit dari
-              satu tempat.
+              Search, update, preview, or delete published content from one
+              place.
             </p>
           </div>
           <button
@@ -864,17 +864,17 @@ export default function AdminContentManager({
             className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-white/10 px-4 py-3 text-xs font-bold text-zinc-400 transition hover:border-lime-300/25 hover:text-white disabled:opacity-40"
           >
             <span className={reloading ? "animate-spin" : ""}>↻</span>
-            {reloading ? "Memuat..." : "Muat ulang"}
+            {reloading ? "Loading..." : "Reload"}
           </button>
         </div>
 
         <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
           {(
             [
-              ["semua", "Total konten"],
-              ["sertifikat", "Sertifikat"],
-              ["portofolio", "Karya"],
-              ["jurnal", "Jurnal"],
+              ["semua", "Total content"],
+              ["sertifikat", "Credentials"],
+              ["portofolio", "Work"],
+              ["jurnal", "Journal"],
             ] as const
           ).map(([value, label]) => (
             <button
@@ -914,11 +914,11 @@ export default function AdminContentManager({
               <circle cx="11" cy="11" r="7" />
               <path d="m20 20-4-4" />
             </svg>
-            <span className="sr-only">Cari konten</span>
+            <span className="sr-only">Search content</span>
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Cari judul, deskripsi, penerbit, teknologi..."
+              placeholder="Search titles, descriptions, issuers, or technologies..."
               className="w-full bg-transparent text-sm text-white placeholder:text-zinc-700 focus:outline-none"
             />
             {query && (
@@ -926,7 +926,7 @@ export default function AdminContentManager({
                 type="button"
                 onClick={() => setQuery("")}
                 className="text-zinc-600 transition hover:text-white"
-                aria-label="Hapus pencarian"
+                aria-label="Clear search"
               >
                 ×
               </button>
@@ -936,12 +936,12 @@ export default function AdminContentManager({
             value={filter}
             onChange={(event) => setFilter(event.target.value as ContentKind)}
             className={`${fieldClass} sm:w-44`}
-            aria-label="Filter jenis konten"
+            aria-label="Filter by content type"
           >
-            <option value="semua">Semua jenis</option>
-            <option value="sertifikat">Sertifikat</option>
-            <option value="portofolio">Karya</option>
-            <option value="jurnal">Jurnal</option>
+            <option value="semua">All types</option>
+            <option value="sertifikat">Credentials</option>
+            <option value="portofolio">Work</option>
+            <option value="jurnal">Journal</option>
           </select>
         </div>
 
@@ -957,7 +957,7 @@ export default function AdminContentManager({
               type="button"
               onClick={() => setNotice("")}
               className="shrink-0 text-zinc-600 transition hover:text-white"
-              aria-label="Tutup notifikasi"
+              aria-label="Close notification"
             >
               ×
             </button>
@@ -1014,8 +1014,8 @@ export default function AdminContentManager({
                       target="_blank"
                       rel="noreferrer"
                       className="grid h-9 w-9 place-items-center rounded-lg border border-white/10 text-xs text-zinc-500 transition hover:border-white/20 hover:text-white"
-                      aria-label={`Pratinjau ${item.data.judul}`}
-                      title="Pratinjau"
+                      aria-label={`Preview ${item.data.judul}`}
+                      title="Preview"
                     >
                       ↗
                     </Link>
@@ -1040,7 +1040,7 @@ export default function AdminContentManager({
                       }}
                       className="rounded-lg border border-red-400/15 px-3 py-2 text-xs font-bold text-red-300/70 transition hover:border-red-300/35 hover:bg-red-400/[0.06] hover:text-red-200"
                     >
-                      Hapus
+                      Delete
                     </button>
                   </div>
                 </article>
@@ -1050,8 +1050,8 @@ export default function AdminContentManager({
             <div className="rounded-xl border border-dashed border-white/10 py-16 text-center">
               <p className="font-mono text-[10px] uppercase tracking-wider text-zinc-600">
                 {items.length === 0
-                  ? "Belum ada konten untuk dikelola"
-                  : "Konten tidak ditemukan"}
+                  ? "There is no content to manage yet"
+                  : "No content found"}
               </p>
               {(query || filter !== "semua") && (
                 <button
@@ -1062,7 +1062,7 @@ export default function AdminContentManager({
                   }}
                   className="mt-4 text-sm font-bold text-lime-300"
                 >
-                  Reset filter
+                  Reset filters
                 </button>
               )}
             </div>
@@ -1071,11 +1071,11 @@ export default function AdminContentManager({
 
         <div className="mt-6 rounded-xl border border-red-400/10 bg-red-400/[0.025] p-4">
           <p className="font-mono text-[8px] uppercase tracking-[0.16em] text-red-300/60">
-            Zona aman penghapusan
+            Deletion safeguards
           </p>
           <p className="mt-2 text-xs leading-5 text-zinc-600">
-            Setiap penghapusan membutuhkan konfirmasi tertulis. Data dihapus
-            dahulu, lalu file terkait dibersihkan dari Supabase Storage.
+            Every deletion requires written confirmation. The database record
+            is deleted first, followed by its associated file in Supabase Storage.
           </p>
         </div>
       </div>

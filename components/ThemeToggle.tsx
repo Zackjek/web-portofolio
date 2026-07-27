@@ -23,8 +23,8 @@ export default function ThemeToggle() {
       type="button"
       onClick={toggleTheme}
       className="theme-toggle group grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full border border-white/10 bg-white/[0.04] text-white transition-all hover:border-lime-300/45 hover:bg-lime-300/10"
-      aria-label="Ganti tema tampilan"
-      title="Ganti tema tampilan"
+      aria-label="Switch color theme"
+      title="Switch color theme"
     >
       <svg
         className="theme-icon theme-icon-sun h-[18px] w-[18px] transition-transform duration-300 group-hover:rotate-12"

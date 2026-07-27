@@ -15,7 +15,6 @@
   --text-muted: #999ca5;
   --text-faint: #6d707a;
   --card-shadow: 0 26px 85px rgba(5, 6, 12, 0.26);
-  --grid-line: rgba(209, 211, 226, 0.045);
   --accent: #b4bdff;
   --accent-fill: #b4bdff;
   --accent-pale: #d7dcff;
@@ -53,7 +52,6 @@ html[data-theme="light"] {
   --text-muted: #696c76;
   --text-faint: #9598a1;
   --card-shadow: 0 24px 68px rgba(49, 51, 66, 0.13);
-  --grid-line: rgba(54, 57, 71, 0.055);
   --accent: #4f5fb4;
   --accent-fill: #9eabf5;
   --accent-pale: #cad1ff;
@@ -507,14 +505,6 @@ textarea,
 .dark-media[class~="bg-[#10171c]"],
 .dark-media [class~="bg-[#10171c]"] {
   background-color: #14161b !important;
-}
-
-.grid-surface {
-  background-image:
-    linear-gradient(var(--grid-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-  background-size: 42px 42px;
-  mask-image: linear-gradient(to bottom, black, transparent 88%);
 }
 
 .noise-surface {

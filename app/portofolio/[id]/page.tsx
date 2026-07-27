@@ -21,7 +21,7 @@ export default async function PortfolioDetailPage({
       <div className="page-shell grid min-h-screen place-items-center pt-24 text-center">
         <div>
           <p className="font-mono text-xs uppercase tracking-wider text-zinc-600">404 / Work not found</p>
-          <Link href="/portofolio" className="mt-5 inline-block text-sm font-bold text-lime-300">Kembali ke karya</Link>
+          <Link href="/portofolio" className="mt-5 inline-block text-sm font-bold text-lime-300">Back to work</Link>
         </div>
       </div>
     );
@@ -33,7 +33,7 @@ export default async function PortfolioDetailPage({
     <section className="section-pad page-shell pt-32 md:pt-40">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <Link href="/portofolio" className="group inline-flex items-center gap-2 text-xs font-bold text-zinc-500 transition-colors hover:text-white">
-          <span className="transition-transform group-hover:-translate-x-1">←</span> Kembali ke karya
+          <span className="transition-transform group-hover:-translate-x-1">←</span> Back to work
         </Link>
         <ShareButton path={`/portofolio/${project.id}`} title={project.judul} />
       </div>
@@ -65,9 +65,9 @@ export default async function PortfolioDetailPage({
                 <path d="M7 3h7l4 4v14H7z" />
                 <path d="M14 3v5h5M9.5 15h5M9.5 18h3.5" />
               </svg>
-              <h2 className="mt-6 text-2xl font-black text-white">Dokumen PDF</h2>
+              <h2 className="mt-6 text-2xl font-black text-white">PDF document</h2>
               <a href={project.gambar_url} target="_blank" rel="noreferrer" className="mt-6 inline-flex items-center gap-3 rounded-full bg-lime-300 px-6 py-3 text-sm font-black text-[#202127]">
-                Buka dokumen <span>↗</span>
+                Open document <span>↗</span>
               </a>
             </div>
           </div>
@@ -84,7 +84,7 @@ export default async function PortfolioDetailPage({
           <p className="whitespace-pre-wrap text-lg leading-9 text-zinc-400">{project.deskripsi}</p>
           {project.link_proyek && (
             <a href={project.link_proyek} target="_blank" rel="noreferrer" className="mt-8 inline-flex items-center gap-3 rounded-full border border-lime-300/25 bg-lime-300/[0.07] px-5 py-3 text-sm font-bold text-lime-300 transition hover:bg-lime-300/[0.13]">
-              Kunjungi proyek <span>↗</span>
+              Visit project <span>↗</span>
             </a>
           )}
         </div>

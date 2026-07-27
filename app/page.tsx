@@ -5,6 +5,8 @@ import { supabase } from "@/lib/supabase";
 import {
   formatDate,
   isCertificate,
+  localizeJournalHtml,
+  localizeJournalTitle,
   type JournalItem,
   type PortfolioItem,
   stripHtml,
@@ -35,9 +37,9 @@ export default async function Home() {
               I build digital things that <span className="accent-gradient">feel alive.</span>
             </h1>
             <p className="mt-8 max-w-xl text-base leading-8 text-zinc-400 reveal-up delay-2 md:text-lg">
-              Halo, saya <strong className="font-semibold text-zinc-100">Muhammad Zaky Mubarok</strong>.
-              Saya merancang dan membangun produk web yang cepat, intuitif, dan enak dipandang—dari ide
-              pertama sampai siap digunakan.
+              Hi, I&apos;m <strong className="font-semibold text-zinc-100">Muhammad Zaky Mubarok</strong>.
+              I design and build fast, intuitive, and polished web products—from
+              the first idea to a production-ready experience.
             </p>
 
             <div className="mt-10 flex flex-wrap gap-3 reveal-up delay-3">
@@ -45,7 +47,7 @@ export default async function Home() {
                 href="/portofolio"
                 className="group inline-flex items-center gap-3 rounded-full bg-lime-300 px-6 py-3.5 text-sm font-black text-[#202127] transition-all hover:scale-[1.03] hover:bg-lime-200"
               >
-                Lihat karya pilihan
+                Explore selected work
                 <svg className="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
                   <path d="M5 12h14M13 6l6 6-6 6" />
                 </svg>
@@ -56,7 +58,7 @@ export default async function Home() {
                 rel="noreferrer"
                 className="inline-flex items-center gap-3 rounded-full border border-white/12 bg-white/[0.035] px-6 py-3.5 text-sm font-bold text-white transition-all hover:border-white/30 hover:bg-white/[0.07]"
               >
-                Hubungi saya
+                Let&apos;s talk
                 <span className="text-zinc-500">↗</span>
               </a>
             </div>
@@ -78,7 +80,7 @@ export default async function Home() {
               </a>
               <span className="flex items-center gap-2">
                 <span className="h-1.5 w-1.5 rounded-full bg-lime-300 pulse-dot" />
-                Jakarta, Indonesia
+                Banyumas, Indonesia
               </span>
             </div>
           </div>
@@ -154,7 +156,7 @@ export default async function Home() {
           <div>
             <p className="eyebrow">What I do</p>
             <h2 className="mt-6 text-3xl font-black tracking-[-0.045em] text-white md:text-4xl">
-              Dari masalah nyata menjadi produk yang mudah dipakai.
+              Turning real problems into products people enjoy using.
             </h2>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -162,22 +164,22 @@ export default async function Home() {
               {
                 number: "01",
                 title: "Frontend engineering",
-                copy: "Antarmuka responsif dengan detail interaksi yang halus, aksesibel, dan tetap cepat.",
+                copy: "Responsive interfaces with thoughtful interactions, strong accessibility, and fast performance.",
               },
               {
                 number: "02",
                 title: "Backend & data",
-                copy: "API, autentikasi, storage, dan database yang dirancang rapi untuk tumbuh bersama produk.",
+                copy: "Well-structured APIs, authentication, storage, and databases designed to grow with the product.",
               },
               {
                 number: "03",
                 title: "Product thinking",
-                copy: "Tidak berhenti di kode—saya memikirkan alur, prioritas, dan pengalaman pengguna secara utuh.",
+                copy: "I look beyond the code to shape clear flows, priorities, and a cohesive user experience.",
               },
               {
                 number: "04",
                 title: "Continuous learning",
-                copy: "Eksperimen dan dokumentasi rutin agar setiap proyek menjadi pijakan untuk hasil berikutnya.",
+                copy: "Regular experiments and documentation turn every project into a stronger foundation for the next.",
               },
             ].map((service) => (
               <article key={service.number} className="glass-card interactive-card color-card organic-card min-h-52 p-6">
@@ -195,10 +197,10 @@ export default async function Home() {
           <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="eyebrow">Selected work</p>
-              <h2 className="mt-5 text-4xl font-black tracking-[-0.05em] text-white md:text-5xl">Karya terbaru.</h2>
+              <h2 className="mt-5 text-4xl font-black tracking-[-0.05em] text-white md:text-5xl">Latest work.</h2>
             </div>
             <Link href="/portofolio" className="group inline-flex items-center gap-2 text-sm font-bold text-zinc-300 transition-colors hover:text-lime-300">
-              Lihat semua karya
+              View all work
               <span className="transition-transform group-hover:translate-x-1">→</span>
             </Link>
           </div>
@@ -229,7 +231,7 @@ export default async function Home() {
               ))
             ) : (
               <div className="glass-card col-span-full rounded-2xl p-10 text-center text-sm text-zinc-500">
-                Karya terbaru akan segera tampil di sini.
+                New work will be featured here soon.
               </div>
             )}
           </div>
@@ -243,14 +245,14 @@ export default async function Home() {
             <div className="relative">
               <p className="eyebrow">Verified growth</p>
               <h2 className="mt-6 max-w-xl text-4xl font-black tracking-[-0.05em] text-white md:text-5xl">
-                Setiap sertifikat adalah jejak proses belajar.
+                Every credential reflects a real learning journey.
               </h2>
               <p className="mt-6 max-w-xl text-base leading-7 text-zinc-400">
-                Galeri kredensial berisi pelatihan, kompetisi, dan pencapaian yang bisa dibuka langsung dalam
-                format gambar maupun PDF.
+                Explore training, competitions, and achievements, with every
+                credential available directly as an image or PDF.
               </p>
               <Link href="/sertifikat" className="mt-9 inline-flex items-center gap-3 rounded-full border border-lime-300/30 bg-lime-300/[0.08] px-5 py-3 text-sm font-bold text-lime-200 transition-all hover:bg-lime-300/15">
-                Buka galeri sertifikat <span>↗</span>
+                Explore credentials <span>↗</span>
               </Link>
             </div>
           </div>
@@ -272,9 +274,9 @@ export default async function Home() {
           <div className="grid gap-10 lg:grid-cols-[0.7fr_1.3fr]">
             <div>
               <p className="eyebrow">Learning log</p>
-              <h2 className="mt-5 text-4xl font-black tracking-[-0.05em] text-white">Catatan dari proses.</h2>
+              <h2 className="mt-5 text-4xl font-black tracking-[-0.05em] text-white">Notes from the process.</h2>
               <p className="mt-4 max-w-sm text-sm leading-7 text-zinc-500">
-                Dokumentasi mingguan tentang eksperimen, tantangan, dan hal yang saya pelajari.
+                Weekly notes on experiments, challenges, and lessons worth carrying forward.
               </p>
             </div>
             <div className="divide-y divide-white/[0.08] border-y border-white/[0.08]">
@@ -283,8 +285,8 @@ export default async function Home() {
                   <Link key={journal.id} href={`/jurnal/${journal.id}`} className="journal-row group grid gap-4 py-6 sm:grid-cols-[3rem_1fr_auto] sm:items-center">
                     <span className="font-mono text-[10px] text-zinc-600">0{index + 1}</span>
                     <div>
-                      <h3 className="font-bold text-zinc-200 transition-colors group-hover:text-lime-300">{journal.judul}</h3>
-                      <p className="mt-2 line-clamp-2 text-sm leading-6 text-zinc-600">{stripHtml(journal.konten)}</p>
+                      <h3 className="font-bold text-zinc-200 transition-colors group-hover:text-lime-300">{localizeJournalTitle(journal.judul)}</h3>
+                      <p className="mt-2 line-clamp-2 text-sm leading-6 text-zinc-600">{stripHtml(localizeJournalHtml(journal.konten))}</p>
                     </div>
                     <div className="flex items-center gap-4">
                       <span className="font-mono text-[9px] uppercase tracking-wider text-zinc-600">{formatDate(journal.created_at, { month: "short" })}</span>
@@ -293,7 +295,7 @@ export default async function Home() {
                   </Link>
                 ))
               ) : (
-                <p className="py-10 text-sm text-zinc-600">Catatan pertama sedang disiapkan.</p>
+                <p className="py-10 text-sm text-zinc-600">The first note is in progress.</p>
               )}
             </div>
           </div>
@@ -306,10 +308,10 @@ export default async function Home() {
           <div className="relative flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="font-mono text-[10px] font-black uppercase tracking-[0.2em]">Have an idea?</p>
-              <h2 className="mt-5 max-w-3xl text-4xl font-black tracking-[-0.055em] md:text-6xl">Mari bikin sesuatu yang berguna.</h2>
+              <h2 className="mt-5 max-w-3xl text-4xl font-black tracking-[-0.055em] md:text-6xl">Let&apos;s build something useful.</h2>
             </div>
             <a href="https://wa.me/6282138057177" target="_blank" rel="noreferrer" className="inline-flex w-max items-center gap-3 rounded-full bg-[#202127] px-6 py-3.5 text-sm font-bold text-white transition-transform hover:scale-[1.03]">
-              Mulai percakapan <span className="text-lime-300">↗</span>
+              Start a conversation <span className="text-lime-300">↗</span>
             </a>
           </div>
         </div>
