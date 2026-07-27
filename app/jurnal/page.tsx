@@ -1,12 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import ShareButton from "@/components/ShareButton";
-import { formatDate, stripHtml, type JournalItem } from "@/lib/content";
+import {
+  formatDate,
+  localizeJournalHtml,
+  localizeJournalTitle,
+  stripHtml,
+  type JournalItem,
+} from "@/lib/content";
 import { supabase } from "@/lib/supabase";
 
 export const metadata: Metadata = {
-  title: "Jurnal",
-  description: "Catatan belajar, eksperimen, dan perjalanan Muhammad Zaky Mubarok.",
+  title: "Journal",
+  description: "Learning notes, experiments, and reflections by Muhammad Zaky Mubarok.",
 };
 
 export const revalidate = 0;
@@ -25,11 +31,12 @@ export default async function JournalPage() {
         <div>
           <p className="eyebrow">Notes from the process</p>
           <h1 className="mt-6 max-w-4xl text-5xl font-black tracking-[-0.06em] text-gradient md:text-7xl">
-            Belajar lebih dalam dengan menuliskannya.
+            Learning more deeply by writing it down.
           </h1>
         </div>
         <p className="max-w-md text-sm leading-7 text-zinc-500">
-          Dokumentasi rutin tentang hal yang saya bangun, kesalahan yang saya temui, dan pelajaran yang layak disimpan.
+          Ongoing notes on what I build, the mistakes I encounter, and the
+          lessons worth keeping.
         </p>
       </div>
 
@@ -51,15 +58,15 @@ export default async function JournalPage() {
                     </span>
                   </div>
                   <h2 className="text-2xl font-black tracking-[-0.035em] text-zinc-200 transition-colors group-hover:text-lime-300 md:text-3xl">
-                    {journal.judul}
+                    {localizeJournalTitle(journal.judul)}
                   </h2>
                   <p className="mt-3 line-clamp-2 max-w-3xl text-sm leading-7 text-zinc-600">
-                    {stripHtml(journal.konten)}
+                    {stripHtml(localizeJournalHtml(journal.konten))}
                   </p>
                 </Link>
                 <div className="relative z-10 flex items-center gap-3">
-                  <ShareButton path={`/jurnal/${journal.id}`} title={journal.judul} />
-                  <Link href={`/jurnal/${journal.id}`} className="grid h-10 w-10 place-items-center rounded-full border border-white/10 text-zinc-600 transition-all group-hover:border-lime-300/30 group-hover:bg-lime-300 group-hover:text-[#202127]" aria-label={`Baca ${journal.judul}`}>
+                  <ShareButton path={`/jurnal/${journal.id}`} title={localizeJournalTitle(journal.judul)} />
+                  <Link href={`/jurnal/${journal.id}`} className="grid h-10 w-10 place-items-center rounded-full border border-white/10 text-zinc-600 transition-all group-hover:border-lime-300/30 group-hover:bg-lime-300 group-hover:text-[#202127]" aria-label={`Read ${localizeJournalTitle(journal.judul)}`}>
                     ↗
                   </Link>
                 </div>
@@ -68,7 +75,7 @@ export default async function JournalPage() {
           </div>
         ) : (
           <div className="rounded-2xl border border-dashed border-white/10 py-20 text-center">
-            <p className="font-mono text-xs uppercase tracking-wider text-zinc-600">Jurnal pertama sedang disiapkan</p>
+            <p className="font-mono text-xs uppercase tracking-wider text-zinc-600">The first journal entry is in progress</p>
           </div>
         )}
       </div>

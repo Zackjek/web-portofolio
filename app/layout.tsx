@@ -52,20 +52,20 @@ export const metadata: Metadata = {
     template: "%s — Muhammad Zaky Mubarok",
   },
   description:
-    "Portofolio Muhammad Zaky Mubarok, mahasiswa Informatika dan web developer yang membangun produk digital modern.",
+    "Muhammad Zaky Mubarok's portfolio — an Informatics student and web developer building modern digital products.",
   keywords: [
     "Muhammad Zaky Mubarok",
     "web developer",
     "Next.js",
     "portfolio",
-    "mahasiswa informatika",
+    "informatics student",
   ],
   openGraph: {
     title: "Muhammad Zaky Mubarok — Developer Portfolio",
     description:
-      "Proyek, sertifikat, dan catatan perjalanan Muhammad Zaky Mubarok di dunia teknologi.",
+      "Projects, credentials, and learning notes from Muhammad Zaky Mubarok's journey in technology.",
     type: "website",
-    locale: "id_ID",
+    locale: "en_US",
     images: ["/fotokuy.png"],
   },
 };
@@ -76,7 +76,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <Script id="theme-initializer" strategy="beforeInteractive">
         {themeInitializer}
       </Script>

@@ -7,11 +7,11 @@ import { getTags, type PortfolioItem } from "@/lib/content";
 
 export default function PortfolioExplorer({ items }: { items: PortfolioItem[] }) {
   const [query, setQuery] = useState("");
-  const [activeTag, setActiveTag] = useState("Semua");
+  const [activeTag, setActiveTag] = useState("All");
 
   const tags = useMemo(() => {
     const allTags = items.flatMap((item) => getTags(item.teknologi));
-    return ["Semua", ...Array.from(new Set(allTags)).slice(0, 8)];
+    return ["All", ...Array.from(new Set(allTags)).slice(0, 8)];
   }, [items]);
 
   const filteredItems = useMemo(() => {
@@ -19,7 +19,7 @@ export default function PortfolioExplorer({ items }: { items: PortfolioItem[] })
     return items.filter((item) => {
       const searchable = `${item.judul} ${item.deskripsi ?? ""} ${item.teknologi ?? ""}`.toLowerCase();
       const matchesQuery = !normalizedQuery || searchable.includes(normalizedQuery);
-      const matchesTag = activeTag === "Semua" || getTags(item.teknologi).includes(activeTag);
+      const matchesTag = activeTag === "All" || getTags(item.teknologi).includes(activeTag);
       return matchesQuery && matchesTag;
     });
   }, [activeTag, items, query]);
@@ -32,15 +32,15 @@ export default function PortfolioExplorer({ items }: { items: PortfolioItem[] })
             <circle cx="11" cy="11" r="7" />
             <path d="m20 20-4-4" />
           </svg>
-          <span className="sr-only">Cari karya</span>
+          <span className="sr-only">Search work</span>
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Cari proyek atau teknologi..."
+            placeholder="Search projects or technologies..."
             className="w-full bg-transparent text-sm text-white placeholder:text-zinc-700 focus:outline-none"
           />
           {query && (
-            <button type="button" onClick={() => setQuery("")} className="text-xs text-zinc-600 hover:text-white" aria-label="Hapus pencarian">
+            <button type="button" onClick={() => setQuery("")} className="text-xs text-zinc-600 hover:text-white" aria-label="Clear search">
               ×
             </button>
           )}
@@ -119,9 +119,9 @@ export default function PortfolioExplorer({ items }: { items: PortfolioItem[] })
 
       {filteredItems.length === 0 && (
         <div className="mt-8 rounded-2xl border border-dashed border-white/10 py-20 text-center">
-          <p className="font-mono text-xs uppercase tracking-wider text-zinc-600">Tidak ada karya yang cocok</p>
-          <button type="button" onClick={() => { setQuery(""); setActiveTag("Semua"); }} className="mt-4 text-sm font-bold text-lime-300">
-            Reset pencarian
+          <p className="font-mono text-xs uppercase tracking-wider text-zinc-600">No matching work found</p>
+          <button type="button" onClick={() => { setQuery(""); setActiveTag("All"); }} className="mt-4 text-sm font-bold text-lime-300">
+            Reset search
           </button>
         </div>
       )}

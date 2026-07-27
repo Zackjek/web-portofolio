@@ -99,7 +99,7 @@ export default function PageMotion() {
             ? "visible translate-y-0 opacity-100"
             : "invisible translate-y-4 opacity-0"
         }`}
-        aria-label="Kembali ke atas"
+        aria-label="Back to top"
       >
         <svg
           className="h-4 w-4"

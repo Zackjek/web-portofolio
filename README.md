@@ -4,7 +4,8 @@ Personal portfolio built with Next.js 16, React 19, Tailwind CSS 4, and Supabase
 
 ## Features
 
-- Responsive editorial-style portfolio with pointer-reactive lighting and subtle motion
+- Responsive editorial-style portfolio with a smooth, grid-free ambient background
+- English interface and compatibility localization for legacy Indonesian journal entries
 - Persistent dark/light theme with system-preference detection and no theme flash
 - Scroll progress, reveal-on-scroll sections, and an accessible back-to-top control
 - Searchable and filterable project archive
@@ -45,7 +46,7 @@ Certificates are stored in the existing `portofolio` table with `SERTIFIKAT`
 as the first comma-separated value in the `teknologi` column:
 
 ```text
-SERTIFIKAT, Issuer, 2026, Pelatihan
+SERTIFIKAT, Issuer, 2026, Training
 ```
 
 The admin batch uploader adds this marker automatically. Existing PDF entries
@@ -58,7 +59,7 @@ configured admin email. The password is verified and stored by Supabase Auth;
 never add it to source code or a `NEXT_PUBLIC_*` environment variable. Ensure
 the configured owner exists in Authentication > Users and has a password.
 
-The **Kirim email untuk membuat password** action uses Supabase recovery and
+The **Send an email to create a password** action uses Supabase recovery and
 returns to `/reset-password`, where the authenticated recovery session can call
 `updateUser`. Add the following exact production URL to Authentication > URL
 Configuration > Redirect URLs:

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Buat Password Admin",
-  description: "Halaman aman untuk membuat atau mengganti password Admin Studio.",
+  title: "Create Admin Password",
+  description: "A secure page for creating or updating the Admin Studio password.",
   robots: {
     index: false,
     follow: false,

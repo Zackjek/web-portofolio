@@ -24,7 +24,7 @@ const fieldClass =
   "w-full rounded-xl border border-white/[0.09] bg-[#080d11] px-4 py-3 text-sm text-white placeholder:text-zinc-700 transition focus:border-lime-300/50 focus:outline-none";
 
 function errorMessage(error: unknown) {
-  return error instanceof Error ? error.message : "Terjadi kesalahan yang tidak diketahui.";
+  return error instanceof Error ? error.message : "An unknown error occurred.";
 }
 
 function titleFromFile(name: string) {
@@ -41,17 +41,17 @@ function loginErrorMessage(message: string) {
     normalizedMessage.includes("invalid login credentials") ||
     normalizedMessage.includes("email not confirmed")
   ) {
-    return "Email atau password admin salah.";
+    return "The admin email or password is incorrect.";
   }
 
   if (
     normalizedMessage.includes("too many requests") ||
     normalizedMessage.includes("rate limit")
   ) {
-    return "Terlalu banyak percobaan login. Tunggu sebentar lalu coba lagi.";
+    return "Too many sign-in attempts. Please wait a moment and try again.";
   }
 
-  return "Login gagal. Periksa koneksi dan coba lagi.";
+  return "Sign-in failed. Check your connection and try again.";
 }
 
 export default function AdminPage() {
@@ -90,7 +90,7 @@ export default function AdminPage() {
       .catch(() => {
         if (!active) return;
         setAccess("guest");
-        setAuthMessage("Sesi tidak dapat diperiksa. Silakan masuk kembali.");
+        setAuthMessage("The session could not be verified. Please sign in again.");
         setAuthMessageTone("error");
       });
 
@@ -110,13 +110,13 @@ export default function AdminPage() {
     event.preventDefault();
 
     if (!isSupabaseConfigured) {
-      setAuthMessage("Konfigurasi Supabase belum tersedia pada deployment ini.");
+      setAuthMessage("Supabase is not configured for this deployment.");
       setAuthMessageTone("error");
       return;
     }
 
     if (!password) {
-      setAuthMessage("Masukkan password admin.");
+      setAuthMessage("Enter the admin password.");
       setAuthMessageTone("error");
       return;
     }
@@ -142,7 +142,7 @@ export default function AdminPage() {
         await supabase.auth.signOut();
         setActiveEmail(normalizedEmail);
         setAccess("denied");
-        setAuthMessage("Akun ini tidak memiliki akses admin.");
+        setAuthMessage("This account does not have admin access.");
         setAuthMessageTone("error");
         return;
       }
@@ -151,7 +151,7 @@ export default function AdminPage() {
       setActiveEmail(normalizedEmail);
       setAccess("authorized");
     } catch {
-      setAuthMessage("Login gagal. Periksa koneksi dan coba lagi.");
+      setAuthMessage("Sign-in failed. Check your connection and try again.");
       setAuthMessageTone("error");
     } finally {
       setSigningIn(false);
@@ -160,7 +160,7 @@ export default function AdminPage() {
 
   const sendPasswordRecovery = async () => {
     if (!isSupabaseConfigured) {
-      setAuthMessage("Konfigurasi Supabase belum tersedia pada deployment ini.");
+      setAuthMessage("Supabase is not configured for this deployment.");
       setAuthMessageTone("error");
       return;
     }
@@ -180,8 +180,8 @@ export default function AdminPage() {
           error.message.toLowerCase().includes("too many requests");
         setAuthMessage(
           isRateLimited
-            ? "Batas pengiriman email Supabase sedang penuh. Tunggu sekitar satu jam, lalu tekan tombol ini sekali saja."
-            : "Email reset belum berhasil dikirim. Periksa koneksi lalu coba lagi.",
+            ? "Supabase has temporarily rate-limited recovery emails. Wait about one hour, then press this button once."
+            : "The recovery email could not be sent. Check your connection and try again.",
         );
         setAuthMessageTone("error");
         return;
@@ -189,11 +189,11 @@ export default function AdminPage() {
 
       setRecoverySent(true);
       setAuthMessage(
-        "Email reset sudah dikirim. Buka email paling baru dan gunakan link tersebut satu kali.",
+        "The recovery email has been sent. Open the newest message and use its link once.",
       );
       setAuthMessageTone("neutral");
     } catch {
-      setAuthMessage("Email reset belum berhasil dikirim. Coba lagi nanti.");
+      setAuthMessage("The recovery email could not be sent. Please try again later.");
       setAuthMessageTone("error");
     } finally {
       setSendingRecovery(false);
@@ -205,7 +205,7 @@ export default function AdminPage() {
     setAccess("guest");
     setActiveEmail("");
     setPassword("");
-    setAuthMessage("Kamu sudah keluar dari Admin Studio.");
+    setAuthMessage("You have signed out of Admin Studio.");
     setAuthMessageTone("neutral");
   };
 
@@ -215,7 +215,7 @@ export default function AdminPage() {
         <div className="text-center">
           <span className="mx-auto block h-8 w-8 animate-spin rounded-full border-2 border-white/10 border-t-lime-300" />
           <p className="mt-4 font-mono text-[9px] uppercase tracking-[0.18em] text-zinc-600">
-            Memeriksa sesi admin
+            Checking admin session
           </p>
         </div>
       </section>
@@ -243,18 +243,18 @@ export default function AdminPage() {
             Protected workspace
           </p>
           <h1 className="mt-2 text-3xl font-black tracking-[-0.04em] text-white">
-            Masuk ke Admin Studio
+            Sign in to Admin Studio
           </h1>
           <p className="mt-4 text-sm leading-7 text-zinc-500">
-            Aksi publikasi, edit, dan hapus hanya tersedia untuk email pemilik
-            portofolio. Masuk langsung dengan password admin—tanpa menunggu
-            email atau magic link.
+            Publishing, editing, and deletion are restricted to the portfolio
+            owner&apos;s email. Sign in directly with the admin password—no
+            email or magic link required.
           </p>
 
           {access === "denied" && (
             <div className="mt-5 rounded-xl border border-red-400/20 bg-red-400/[0.05] p-4 text-sm leading-6 text-red-200">
-              Akun <span className="font-bold">{activeEmail}</span> tidak
-              memiliki akses admin.
+              The account <span className="font-bold">{activeEmail}</span> does
+              not have admin access.
             </div>
           )}
 
@@ -277,13 +277,13 @@ export default function AdminPage() {
               onClick={() => void signOut()}
               className="mt-7 w-full rounded-xl border border-white/10 px-5 py-3.5 text-sm font-bold text-zinc-400 transition hover:text-white"
             >
-              Keluar dari akun ini
+              Sign out of this account
             </button>
           ) : (
             <form onSubmit={signIn} className="mt-7 space-y-4">
               <label className="block space-y-2">
                 <span className="text-xs font-bold text-zinc-400">
-                  Email admin
+                  Admin email
                 </span>
                 <input
                   type="email"
@@ -310,18 +310,18 @@ export default function AdminPage() {
                     required
                     autoFocus
                     className={`${fieldClass} pr-24`}
-                    placeholder="Masukkan password admin"
+                    placeholder="Enter the admin password"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((current) => !current)}
                     className="absolute inset-y-0 right-3 my-auto h-fit rounded-lg px-2 py-1 text-[10px] font-bold text-zinc-600 transition hover:text-lime-300"
                     aria-label={
-                      showPassword ? "Sembunyikan password" : "Tampilkan password"
+                      showPassword ? "Hide password" : "Show password"
                     }
                     aria-pressed={showPassword}
                   >
-                    {showPassword ? "Sembunyikan" : "Lihat"}
+                    {showPassword ? "Hide" : "Show"}
                   </button>
                 </span>
               </label>
@@ -331,13 +331,13 @@ export default function AdminPage() {
                 disabled={signingIn || !isSupabaseConfigured || !password}
                 className="flex w-full items-center justify-between rounded-xl bg-lime-300 px-5 py-4 text-sm font-black text-[#202127] transition hover:bg-lime-200 disabled:cursor-not-allowed disabled:opacity-40"
               >
-                <span>{signingIn ? "Memverifikasi..." : "Masuk ke Admin"}</span>
+                <span>{signingIn ? "Verifying..." : "Sign in to Admin"}</span>
                 <span>↗</span>
               </button>
 
               <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-4">
                 <p className="text-xs leading-5 text-zinc-500">
-                  Belum pernah membuat password atau lupa password?
+                  Haven&apos;t created a password yet, or forgot it?
                 </p>
                 <button
                   type="button"
@@ -350,17 +350,17 @@ export default function AdminPage() {
                   className="mt-2 text-left text-xs font-bold text-lime-300 transition hover:text-lime-200 disabled:cursor-not-allowed disabled:text-zinc-600"
                 >
                   {sendingRecovery
-                    ? "Mengirim email reset..."
+                    ? "Sending recovery email..."
                     : recoverySent
-                      ? "Email reset sudah dikirim"
-                      : "Kirim email untuk membuat password →"}
+                      ? "Recovery email sent"
+                      : "Send an email to create a password →"}
                 </button>
               </div>
             </form>
           )}
 
           <p className="mt-5 text-center font-mono text-[8px] uppercase tracking-[0.12em] text-zinc-700">
-            Password diverifikasi aman oleh Supabase Auth
+            Password securely verified by Supabase Auth
           </p>
         </div>
       </section>
@@ -398,7 +398,7 @@ function AdminPanel({
 
   const [issuer, setIssuer] = useState("");
   const [year, setYear] = useState(String(new Date().getFullYear()));
-  const [category, setCategory] = useState("Pelatihan");
+  const [category, setCategory] = useState("Training");
   const [certificateDescription, setCertificateDescription] = useState("");
   const [verificationUrl, setVerificationUrl] = useState("");
   const [certificateFiles, setCertificateFiles] = useState<QueuedCertificate[]>([]);
@@ -413,12 +413,12 @@ function AdminPanel({
     event.preventDefault();
     const content = editorRef.current?.innerHTML.trim() ?? "";
     if (!journalTitle.trim() || !content) {
-      setMessage("Judul dan isi jurnal wajib diisi.");
+      setMessage("A title and journal content are required.");
       return;
     }
 
     setLoading(true);
-    setMessage("Menerbitkan jurnal...");
+    setMessage("Publishing journal entry...");
     try {
       const { error } = await supabase.from("jurnal").insert([
         { judul: journalTitle.trim(), konten: content },
@@ -428,9 +428,9 @@ function AdminPanel({
       setJournalTitle("");
       if (editorRef.current) editorRef.current.innerHTML = "";
       setContentVersion((current) => current + 1);
-      setMessage("Jurnal berhasil diterbitkan.");
+      setMessage("Journal entry published successfully.");
     } catch (error) {
-      setMessage(`Gagal menerbitkan jurnal: ${errorMessage(error)}`);
+      setMessage(`Failed to publish the journal entry: ${errorMessage(error)}`);
     } finally {
       setLoading(false);
     }
@@ -439,12 +439,12 @@ function AdminPanel({
   const handleUploadProject = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!projectTitle.trim() || !projectDescription.trim() || !projectFile) {
-      setMessage("Judul, deskripsi, dan media proyek wajib diisi.");
+      setMessage("A title, description, and project cover are required.");
       return;
     }
 
     setLoading(true);
-    setMessage("Mengunggah proyek...");
+    setMessage("Uploading project...");
     let uploadedUrl: string | null = null;
     try {
       const { publicUrl: imageUrl } = await uploadMedia(projectFile, "projects");
@@ -467,10 +467,10 @@ function AdminPanel({
       setProjectLink("");
       setProjectFile(null);
       setContentVersion((current) => current + 1);
-      setMessage("Proyek berhasil ditambahkan ke galeri.");
+      setMessage("Project added to the gallery successfully.");
     } catch (error) {
       if (uploadedUrl) await removeMedia(uploadedUrl);
-      setMessage(`Gagal mengunggah proyek: ${errorMessage(error)}`);
+      setMessage(`Failed to upload the project: ${errorMessage(error)}`);
     } finally {
       setLoading(false);
     }
@@ -484,7 +484,7 @@ function AdminPanel({
     });
 
     if (allowed.length !== Array.from(files).length) {
-      setMessage("Sebagian file dilewati. Gunakan gambar/PDF dengan ukuran maksimal 20 MB per file.");
+      setMessage("Some files were skipped. Use images or PDFs up to 20 MB each.");
     } else {
       setMessage("");
     }
@@ -502,23 +502,23 @@ function AdminPanel({
   const handleUploadCertificates = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!issuer.trim() || !year.trim() || certificateFiles.length === 0) {
-      setMessage("Penerbit, tahun, dan minimal satu file sertifikat wajib diisi.");
+      setMessage("An issuer, year, and at least one credential file are required.");
       return;
     }
 
     if (certificateFiles.some((item) => !item.title.trim())) {
-      setMessage("Setiap sertifikat harus memiliki judul.");
+      setMessage("Every credential must have a title.");
       return;
     }
 
     setLoading(true);
     setUploadProgress(0);
-    setMessage(`Menyiapkan ${certificateFiles.length} sertifikat...`);
+    setMessage(`Preparing ${certificateFiles.length} credentials...`);
 
     try {
       for (let index = 0; index < certificateFiles.length; index += 1) {
         const item = certificateFiles[index];
-        setMessage(`Mengunggah ${index + 1} dari ${certificateFiles.length}: ${item.title}`);
+        setMessage(`Uploading ${index + 1} of ${certificateFiles.length}: ${item.title}`);
         const { publicUrl: fileUrl } = await uploadMedia(item.file, "certificates");
         const tags = [
           CERTIFICATE_MARKER,
@@ -532,7 +532,7 @@ function AdminPanel({
             judul: item.title.trim(),
             deskripsi:
               certificateDescription.trim() ||
-              `Sertifikat ${item.title.trim()} yang diterbitkan oleh ${issuer.trim()}.`,
+              `${item.title.trim()}, issued by ${issuer.trim()}.`,
             teknologi: tags,
             link_proyek: verificationUrl.trim() || null,
             gambar_url: fileUrl,
@@ -551,9 +551,9 @@ function AdminPanel({
       setVerificationUrl("");
       setUploadProgress(100);
       setContentVersion((current) => current + 1);
-      setMessage(`${total} sertifikat berhasil dipublikasikan.`);
+      setMessage(`${total} credentials published successfully.`);
     } catch (error) {
-      setMessage(`Proses terhenti: ${errorMessage(error)}`);
+      setMessage(`The process stopped: ${errorMessage(error)}`);
     } finally {
       setLoading(false);
     }
@@ -566,15 +566,15 @@ function AdminPanel({
           <p className="eyebrow">Content studio</p>
           <h1 className="mt-5 text-4xl font-black tracking-[-0.05em] text-white">Admin studio.</h1>
           <p className="mt-4 text-sm leading-7 text-zinc-500">
-            Kelola, edit, hapus, dan publikasikan seluruh konten portofolio.
+            Manage, edit, delete, and publish all portfolio content.
           </p>
 
           <div className="mt-8 space-y-2 rounded-2xl border border-white/[0.08] bg-white/[0.025] p-2">
             {([
-              ["kelola", "Kelola konten", "Edit, preview & hapus"],
-              ["sertifikat", "Sertifikat", "Upload banyak file"],
-              ["portofolio", "Karya", "Proyek & studi kasus"],
-              ["jurnal", "Jurnal", "Catatan mingguan"],
+              ["kelola", "Manage content", "Edit, preview & delete"],
+              ["sertifikat", "Credentials", "Upload multiple files"],
+              ["portofolio", "Work", "Projects & case studies"],
+              ["jurnal", "Journal", "Weekly notes"],
             ] as const).map(([value, label, caption], index) => (
               <button
                 key={value}
@@ -614,7 +614,7 @@ function AdminPanel({
               onClick={onSignOut}
               className="mt-3 text-xs font-bold text-zinc-600 transition hover:text-red-300"
             >
-              Keluar dari admin
+              Sign out
             </button>
           </div>
         </aside>
@@ -628,31 +628,32 @@ function AdminPanel({
             <form onSubmit={handleUploadCertificates} className="space-y-7">
               <div>
                 <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-lime-300">Batch uploader</p>
-                <h2 className="mt-2 text-2xl font-black tracking-tight text-white">Publikasikan e-sertifikat</h2>
+                <h2 className="mt-2 text-2xl font-black tracking-tight text-white">Publish credentials</h2>
                 <p className="mt-2 text-sm leading-6 text-zinc-600">
-                  Pilih beberapa gambar atau PDF sekaligus. Judul setiap file masih bisa diedit sebelum diunggah.
+                  Select multiple images or PDFs at once. Each title can still
+                  be edited before upload.
                 </p>
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
                 <label className="space-y-2">
-                  <span className="text-xs font-bold text-zinc-400">Penerbit / Institusi *</span>
-                  <input value={issuer} onChange={(event) => setIssuer(event.target.value)} className={fieldClass} placeholder="Contoh: Dicoding Indonesia" />
+                  <span className="text-xs font-bold text-zinc-400">Issuer / Institution *</span>
+                  <input value={issuer} onChange={(event) => setIssuer(event.target.value)} className={fieldClass} placeholder="Example: Google Career Certificates" />
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                   <label className="space-y-2">
-                    <span className="text-xs font-bold text-zinc-400">Tahun *</span>
+                    <span className="text-xs font-bold text-zinc-400">Year *</span>
                     <input value={year} onChange={(event) => setYear(event.target.value)} inputMode="numeric" className={fieldClass} placeholder="2026" />
                   </label>
                   <label className="space-y-2">
-                    <span className="text-xs font-bold text-zinc-400">Kategori</span>
+                    <span className="text-xs font-bold text-zinc-400">Category</span>
                     <select value={category} onChange={(event) => setCategory(event.target.value)} className={fieldClass}>
-                      <option>Pelatihan</option>
-                      <option>Kompetisi</option>
-                      <option>Konferensi</option>
-                      <option>Organisasi</option>
-                      <option>Akademik</option>
-                      <option>Lainnya</option>
+                      <option>Training</option>
+                      <option>Competition</option>
+                      <option>Conference</option>
+                      <option>Organization</option>
+                      <option>Academic</option>
+                      <option>Other</option>
                     </select>
                   </label>
                 </div>
@@ -680,17 +681,17 @@ function AdminPanel({
                   <span className="mx-auto grid h-12 w-12 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-2xl text-zinc-500 transition group-hover:border-lime-300/30 group-hover:text-lime-300">
                     +
                   </span>
-                  <span className="mt-4 block text-sm font-black text-white">Tarik file ke sini atau klik untuk memilih</span>
-                  <span className="mt-2 block font-mono text-[9px] uppercase tracking-wider text-zinc-700">PNG, JPG, WEBP, PDF • maks. 20 MB/file</span>
+                  <span className="mt-4 block text-sm font-black text-white">Drop files here or click to browse</span>
+                  <span className="mt-2 block font-mono text-[9px] uppercase tracking-wider text-zinc-700">PNG, JPG, WEBP, PDF • max. 20 MB/file</span>
                 </span>
               </label>
 
               {certificateFiles.length > 0 && (
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <p className="text-xs font-bold text-zinc-400">{certificateFiles.length} file siap</p>
+                    <p className="text-xs font-bold text-zinc-400">{certificateFiles.length} files ready</p>
                     <button type="button" onClick={() => setCertificateFiles([])} className="text-xs text-zinc-600 transition hover:text-red-300">
-                      Hapus semua
+                      Clear all
                     </button>
                   </div>
                   <div className="max-h-80 space-y-2 overflow-y-auto pr-1">
@@ -710,7 +711,7 @@ function AdminPanel({
                               )
                             }
                             className="w-full bg-transparent text-sm font-bold text-white focus:outline-none"
-                            aria-label={`Judul sertifikat ${index + 1}`}
+                            aria-label={`Credential title ${index + 1}`}
                           />
                           <p className="mt-1 truncate font-mono text-[8px] uppercase tracking-wider text-zinc-700">
                             {(item.file.size / 1024 / 1024).toFixed(2)} MB • {item.file.name}
@@ -720,7 +721,7 @@ function AdminPanel({
                           type="button"
                           onClick={() => setCertificateFiles((current) => current.filter((queued) => queued.id !== item.id))}
                           className="grid h-8 w-8 place-items-center rounded-full text-zinc-600 transition hover:bg-red-400/10 hover:text-red-300"
-                          aria-label={`Hapus ${item.title}`}
+                          aria-label={`Remove ${item.title}`}
                         >
                           ×
                         </button>
@@ -731,12 +732,12 @@ function AdminPanel({
               )}
 
               <label className="space-y-2">
-                <span className="text-xs font-bold text-zinc-400">Deskripsi umum <span className="font-normal text-zinc-700">(opsional)</span></span>
-                <textarea value={certificateDescription} onChange={(event) => setCertificateDescription(event.target.value)} className={`${fieldClass} min-h-24 resize-y`} placeholder="Kompetensi atau pencapaian yang dibuktikan oleh sertifikat ini..." />
+                <span className="text-xs font-bold text-zinc-400">Shared description <span className="font-normal text-zinc-700">(optional)</span></span>
+                <textarea value={certificateDescription} onChange={(event) => setCertificateDescription(event.target.value)} className={`${fieldClass} min-h-24 resize-y`} placeholder="The skills or achievement demonstrated by these credentials..." />
               </label>
 
               <label className="space-y-2">
-                <span className="text-xs font-bold text-zinc-400">Tautan verifikasi <span className="font-normal text-zinc-700">(opsional)</span></span>
+                <span className="text-xs font-bold text-zinc-400">Verification link <span className="font-normal text-zinc-700">(optional)</span></span>
                 <input type="url" value={verificationUrl} onChange={(event) => setVerificationUrl(event.target.value)} className={fieldClass} placeholder="https://..." />
               </label>
 
@@ -747,7 +748,7 @@ function AdminPanel({
               )}
 
               <button type="submit" disabled={loading || certificateFiles.length === 0} className="flex w-full items-center justify-between rounded-xl bg-lime-300 px-5 py-4 text-sm font-black text-[#202127] transition hover:bg-lime-200 disabled:cursor-not-allowed disabled:opacity-40">
-                <span>{loading ? "Sedang memproses..." : `Publikasikan ${certificateFiles.length || ""} sertifikat`}</span>
+                <span>{loading ? "Processing..." : `Publish ${certificateFiles.length || ""} credentials`}</span>
                 <span>↗</span>
               </button>
             </form>
@@ -757,32 +758,32 @@ function AdminPanel({
             <form onSubmit={handleUploadProject} className="space-y-5">
               <div>
                 <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-lime-300">Project entry</p>
-                <h2 className="mt-2 text-2xl font-black tracking-tight text-white">Tambahkan karya baru</h2>
+                <h2 className="mt-2 text-2xl font-black tracking-tight text-white">Add new work</h2>
               </div>
               <label className="block space-y-2">
-                <span className="text-xs font-bold text-zinc-400">Judul proyek *</span>
-                <input value={projectTitle} onChange={(event) => setProjectTitle(event.target.value)} className={fieldClass} placeholder="Nama proyek yang menarik" />
+                <span className="text-xs font-bold text-zinc-400">Project title *</span>
+                <input value={projectTitle} onChange={(event) => setProjectTitle(event.target.value)} className={fieldClass} placeholder="A clear, compelling project name" />
               </label>
               <label className="block space-y-2">
-                <span className="text-xs font-bold text-zinc-400">Deskripsi *</span>
-                <textarea value={projectDescription} onChange={(event) => setProjectDescription(event.target.value)} className={`${fieldClass} min-h-32 resize-y`} placeholder="Masalah, solusi, dan dampak proyek..." />
+                <span className="text-xs font-bold text-zinc-400">Description *</span>
+                <textarea value={projectDescription} onChange={(event) => setProjectDescription(event.target.value)} className={`${fieldClass} min-h-32 resize-y`} placeholder="The problem, solution, and project impact..." />
               </label>
               <div className="grid gap-4 md:grid-cols-2">
                 <label className="space-y-2">
-                  <span className="text-xs font-bold text-zinc-400">Teknologi</span>
+                  <span className="text-xs font-bold text-zinc-400">Technologies</span>
                   <input value={projectTech} onChange={(event) => setProjectTech(event.target.value)} className={fieldClass} placeholder="Next.js, Supabase, Go" />
                 </label>
                 <label className="space-y-2">
-                  <span className="text-xs font-bold text-zinc-400">Tautan proyek</span>
+                  <span className="text-xs font-bold text-zinc-400">Project link</span>
                   <input type="url" value={projectLink} onChange={(event) => setProjectLink(event.target.value)} className={fieldClass} placeholder="https://..." />
                 </label>
               </div>
               <label className="block space-y-2">
-                <span className="text-xs font-bold text-zinc-400">Cover proyek *</span>
+                <span className="text-xs font-bold text-zinc-400">Project cover *</span>
                 <input type="file" accept="image/*" onChange={(event) => setProjectFile(event.target.files?.[0] ?? null)} className="block w-full rounded-xl border border-white/[0.09] bg-[#080d11] p-3 text-xs text-zinc-500 file:mr-4 file:rounded-lg file:border-0 file:bg-white/[0.08] file:px-4 file:py-2 file:text-xs file:font-bold file:text-white" />
               </label>
               <button type="submit" disabled={loading} className="flex w-full items-center justify-between rounded-xl bg-lime-300 px-5 py-4 text-sm font-black text-[#202127] transition hover:bg-lime-200 disabled:opacity-40">
-                <span>{loading ? "Mengunggah..." : "Publikasikan proyek"}</span><span>↗</span>
+                <span>{loading ? "Uploading..." : "Publish project"}</span><span>↗</span>
               </button>
             </form>
           )}
@@ -791,33 +792,33 @@ function AdminPanel({
             <form onSubmit={handleUploadJournal} className="space-y-5">
               <div>
                 <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-lime-300">Writing desk</p>
-                <h2 className="mt-2 text-2xl font-black tracking-tight text-white">Tulis jurnal baru</h2>
+                <h2 className="mt-2 text-2xl font-black tracking-tight text-white">Write a new journal entry</h2>
               </div>
               <label className="block space-y-2">
-                <span className="text-xs font-bold text-zinc-400">Judul jurnal *</span>
-                <input value={journalTitle} onChange={(event) => setJournalTitle(event.target.value)} className={fieldClass} placeholder="Apa yang dipelajari minggu ini?" />
+                <span className="text-xs font-bold text-zinc-400">Journal title *</span>
+                <input value={journalTitle} onChange={(event) => setJournalTitle(event.target.value)} className={fieldClass} placeholder="What did you learn this week?" />
               </label>
               <label className="block space-y-2">
                 <span className="flex items-center justify-between gap-3 text-xs font-bold text-zinc-400">
-                  <span>Isi jurnal *</span>
-                  <span className="rounded-full bg-lime-300/10 px-2 py-1 font-mono text-[8px] uppercase tracking-wider text-lime-300">Mendukung paste tabel</span>
+                  <span>Journal content *</span>
+                  <span className="rounded-full bg-lime-300/10 px-2 py-1 font-mono text-[8px] uppercase tracking-wider text-lime-300">Table paste supported</span>
                 </span>
                 <div
                   ref={editorRef}
                   contentEditable
                   suppressContentEditableWarning
-                  data-placeholder="Mulai menulis di sini, atau tempel tabel dari Excel/Word..."
+                  data-placeholder="Start writing here, or paste a table from Excel or Word..."
                   className={`${fieldClass} prose prose-invert max-h-[36rem] min-h-80 max-w-none overflow-y-auto focus:border-lime-300/50`}
                 />
               </label>
               <button type="submit" disabled={loading} className="flex w-full items-center justify-between rounded-xl bg-lime-300 px-5 py-4 text-sm font-black text-[#202127] transition hover:bg-lime-200 disabled:opacity-40">
-                <span>{loading ? "Menerbitkan..." : "Terbitkan jurnal"}</span><span>↗</span>
+                <span>{loading ? "Publishing..." : "Publish journal entry"}</span><span>↗</span>
               </button>
             </form>
           )}
 
           {message && (
-            <div className={`mt-6 rounded-xl border px-4 py-3 text-sm ${message.toLowerCase().includes("gagal") || message.toLowerCase().includes("terhenti") ? "border-red-400/20 bg-red-400/[0.05] text-red-200" : "border-white/[0.08] bg-white/[0.025] text-zinc-400"}`}>
+            <div className={`mt-6 rounded-xl border px-4 py-3 text-sm ${message.toLowerCase().includes("failed") || message.toLowerCase().includes("stopped") || message.toLowerCase().includes("could not") ? "border-red-400/20 bg-red-400/[0.05] text-red-200" : "border-white/[0.08] bg-white/[0.025] text-zinc-400"}`}>
               {message}
             </div>
           )}

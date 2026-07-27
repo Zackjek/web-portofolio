@@ -26,7 +26,7 @@ function PreviewPlaceholder({ failed }: { failed: boolean }) {
           <path d="M14 3v5h5M9.5 15h5M9.5 18h3.5" />
         </svg>
         <p className="mt-3 font-mono text-[9px] uppercase tracking-[0.18em] text-zinc-600">
-          {failed ? "Preview tidak tersedia" : "Menyiapkan preview"}
+          {failed ? "Preview unavailable" : "Preparing preview"}
         </p>
       </div>
     </div>
@@ -120,7 +120,7 @@ export default function PdfThumbnail({
         if (cancelled || (error instanceof Error && error.name === "RenderingCancelledException")) {
           return;
         }
-        console.error(`Gagal membuat thumbnail PDF "${title}".`, error);
+        console.error(`Unable to generate a PDF thumbnail for "${title}".`, error);
         setStatus("error");
       }
     };
@@ -142,7 +142,7 @@ export default function PdfThumbnail({
       <canvas
         ref={canvasRef}
         role="img"
-        aria-label={`Halaman pertama ${title}`}
+        aria-label={`First page of ${title}`}
         className={`h-full w-full object-cover transition duration-700 group-hover:scale-105 ${
           status === "ready" ? "opacity-100" : "opacity-0"
         }`}

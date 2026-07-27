@@ -12,14 +12,14 @@ export default function Footer() {
             <span className="font-semibold tracking-tight text-white">Muhammad Zaky Mubarok</span>
           </Link>
           <p className="mt-4 max-w-sm text-sm leading-6 text-zinc-500">
-            Merancang pengalaman digital yang cepat, berguna, dan punya karakter.
+            Designing digital experiences that are fast, useful, and full of character.
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-zinc-500">
-          <Link href="/portofolio" className="transition-colors hover:text-white">Karya</Link>
-          <Link href="/sertifikat" className="transition-colors hover:text-white">Sertifikat</Link>
-          <Link href="/jurnal" className="transition-colors hover:text-white">Jurnal</Link>
+          <Link href="/portofolio" className="transition-colors hover:text-white">Work</Link>
+          <Link href="/sertifikat" className="transition-colors hover:text-white">Credentials</Link>
+          <Link href="/jurnal" className="transition-colors hover:text-white">Journal</Link>
           <a href="https://github.com/Zackjek" target="_blank" rel="noreferrer" className="transition-colors hover:text-white">
             GitHub ↗
           </a>
