@@ -27,7 +27,7 @@ export default async function Home() {
 
   return (
     <>
-      <section className="relative min-h-screen overflow-hidden pt-32 md:pt-40">
+      <section className="hero-section relative min-h-screen overflow-hidden pt-32 md:pt-40">
         <div className="page-shell grid items-center gap-14 pb-20 lg:grid-cols-[1.16fr_0.84fr] lg:gap-20">
           <div className="relative z-10">
             <div className="eyebrow reveal-up">Web developer • Informatics student</div>
@@ -43,7 +43,7 @@ export default async function Home() {
             <div className="mt-10 flex flex-wrap gap-3 reveal-up delay-3">
               <Link
                 href="/portofolio"
-                className="group inline-flex items-center gap-3 rounded-full bg-lime-300 px-6 py-3.5 text-sm font-black text-[#071005] transition-all hover:scale-[1.03] hover:bg-lime-200"
+                className="group inline-flex items-center gap-3 rounded-full bg-lime-300 px-6 py-3.5 text-sm font-black text-[#202127] transition-all hover:scale-[1.03] hover:bg-lime-200"
               >
                 Lihat karya pilihan
                 <svg className="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
@@ -84,9 +84,9 @@ export default async function Home() {
           </div>
 
           <div className="relative mx-auto w-full max-w-md lg:max-w-none">
-            <div className="absolute -inset-10 rounded-full bg-cyan-300/[0.05] blur-3xl" />
-            <div className="glass-card float-slow relative mx-auto aspect-[4/5] max-w-[420px] overflow-hidden rounded-[2rem] p-3">
-              <div className="relative h-full overflow-hidden rounded-[1.45rem] bg-[#10171c]">
+            <div className="absolute -inset-10 rounded-full bg-cyan-300/[0.08] blur-3xl" />
+            <div className="glass-card portrait-frame float-slow relative mx-auto aspect-[4/5] max-w-[420px] overflow-hidden p-3">
+              <div className="dark-media portrait-media relative h-full overflow-hidden bg-[#10171c]">
                 <Image
                   src="/fotokuy.png"
                   alt="Muhammad Zaky Mubarok"
@@ -112,7 +112,7 @@ export default async function Home() {
               </div>
             </div>
 
-            <div className="glass-card absolute -left-3 top-[18%] rounded-2xl px-4 py-3 shadow-2xl sm:-left-10">
+            <div className="glass-card floating-chip absolute -left-3 top-[18%] px-4 py-3 shadow-2xl sm:-left-10">
               <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-zinc-500">Status</p>
               <p className="mt-1 flex items-center gap-2 text-xs font-bold text-white">
                 <span className="h-1.5 w-1.5 rounded-full bg-lime-300 pulse-dot" />
@@ -120,7 +120,7 @@ export default async function Home() {
               </p>
             </div>
 
-            <div className="glass-card absolute -bottom-5 right-0 grid grid-cols-3 divide-x divide-white/10 overflow-hidden rounded-2xl sm:-right-6">
+            <div className="glass-card floating-stats absolute -bottom-5 right-0 grid grid-cols-3 divide-x divide-white/10 overflow-hidden sm:-right-6">
               {[
                 [String(projects.length).padStart(2, "0"), "Projects"],
                 [String(certificates.length).padStart(2, "0"), "Credentials"],
@@ -135,7 +135,7 @@ export default async function Home() {
           </div>
         </div>
 
-        <div className="border-y border-white/[0.08] bg-black/10 py-5">
+        <div className="marquee-surface border-y border-white/[0.08] py-5">
           <div className="overflow-hidden">
             <div className="marquee-track flex items-center">
               {[...stack, ...stack].map((item, index) => (
@@ -180,8 +180,8 @@ export default async function Home() {
                 copy: "Eksperimen dan dokumentasi rutin agar setiap proyek menjadi pijakan untuk hasil berikutnya.",
               },
             ].map((service) => (
-              <article key={service.number} className="glass-card interactive-card min-h-52 rounded-2xl p-6">
-                <span className="font-mono text-[10px] font-bold tracking-[0.18em] text-lime-300">{service.number}</span>
+              <article key={service.number} className="glass-card interactive-card color-card organic-card min-h-52 p-6">
+                <span className="card-accent font-mono text-[10px] font-bold tracking-[0.18em]">{service.number}</span>
                 <h3 className="mt-12 text-xl font-bold tracking-tight text-white">{service.title}</h3>
                 <p className="mt-3 text-sm leading-6 text-zinc-500">{service.copy}</p>
               </article>
@@ -190,7 +190,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="section-pad border-y border-white/[0.07] bg-white/[0.018]">
+      <section className="section-wash section-pad border-y border-white/[0.07]">
         <div className="page-shell">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <div>
@@ -209,9 +209,9 @@ export default async function Home() {
                 <Link
                   key={project.id}
                   href={`/portofolio/${project.id}`}
-                  className={`glass-card interactive-card group rounded-2xl p-3 ${index === 0 ? "md:col-span-2 lg:col-span-1" : ""}`}
+                  className={`glass-card interactive-card color-card organic-card group p-3 ${index === 0 ? "md:col-span-2 lg:col-span-1" : ""}`}
                 >
-                  <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-[#10171c]">
+                  <div className="dark-media relative aspect-[4/3] overflow-hidden rounded-xl bg-[#10171c]">
                     {project.gambar_url ? (
                       <img src={project.gambar_url} alt={project.judul} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
                     ) : (
@@ -237,7 +237,7 @@ export default async function Home() {
       </section>
 
       <section className="section-pad page-shell">
-        <div className="grid overflow-hidden rounded-[2rem] border border-white/[0.09] bg-[#0b1217] lg:grid-cols-[1fr_0.85fr]">
+        <div className="certificate-panel grid overflow-hidden border border-white/[0.09] lg:grid-cols-[1fr_0.85fr]">
           <div className="relative p-8 md:p-12 lg:p-16">
             <div className="absolute -left-20 -top-20 h-64 w-64 rounded-full bg-lime-300/[0.07] blur-3xl" />
             <div className="relative">
@@ -254,14 +254,14 @@ export default async function Home() {
               </Link>
             </div>
           </div>
-          <div className="grid min-h-[310px] place-items-center border-t border-white/[0.08] bg-[radial-gradient(circle_at_center,rgba(71,215,232,0.11),transparent_60%)] p-8 lg:border-l">
+          <div className="ambient-mint grid min-h-[310px] place-items-center border-t border-white/[0.08] p-8 lg:border-l">
             <div className="relative grid h-56 w-56 place-items-center rounded-full border border-dashed border-white/20">
               <div className="absolute inset-5 rounded-full border border-white/[0.08]" />
               <div className="text-center">
                 <p className="text-7xl font-black tracking-[-0.07em] text-white">{String(certificates.length).padStart(2, "0")}</p>
                 <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.2em] text-lime-300">Credentials</p>
               </div>
-              <span className="absolute right-2 top-8 grid h-11 w-11 place-items-center rounded-full bg-lime-300 font-black text-[#071005]">✓</span>
+              <span className="absolute right-2 top-8 grid h-11 w-11 place-items-center rounded-full bg-lime-300 font-black text-[#202127]">✓</span>
             </div>
           </div>
         </div>
@@ -280,7 +280,7 @@ export default async function Home() {
             <div className="divide-y divide-white/[0.08] border-y border-white/[0.08]">
               {journals.length > 0 ? (
                 journals.slice(0, 3).map((journal, index) => (
-                  <Link key={journal.id} href={`/jurnal/${journal.id}`} className="group grid gap-4 py-6 sm:grid-cols-[3rem_1fr_auto] sm:items-center">
+                  <Link key={journal.id} href={`/jurnal/${journal.id}`} className="journal-row group grid gap-4 py-6 sm:grid-cols-[3rem_1fr_auto] sm:items-center">
                     <span className="font-mono text-[10px] text-zinc-600">0{index + 1}</span>
                     <div>
                       <h3 className="font-bold text-zinc-200 transition-colors group-hover:text-lime-300">{journal.judul}</h3>
@@ -301,14 +301,14 @@ export default async function Home() {
       </section>
 
       <section className="page-shell pb-24">
-        <div className="relative overflow-hidden rounded-[2rem] border border-lime-300/20 bg-lime-300 px-7 py-12 text-[#071005] md:px-12 md:py-16">
+        <div className="cta-panel relative overflow-hidden border px-7 py-12 md:px-12 md:py-16">
           <div className="absolute -right-10 -top-24 text-[15rem] font-black leading-none text-black/[0.055]">Z</div>
           <div className="relative flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="font-mono text-[10px] font-black uppercase tracking-[0.2em]">Have an idea?</p>
               <h2 className="mt-5 max-w-3xl text-4xl font-black tracking-[-0.055em] md:text-6xl">Mari bikin sesuatu yang berguna.</h2>
             </div>
-            <a href="https://wa.me/6282138057177" target="_blank" rel="noreferrer" className="inline-flex w-max items-center gap-3 rounded-full bg-[#071005] px-6 py-3.5 text-sm font-bold text-white transition-transform hover:scale-[1.03]">
+            <a href="https://wa.me/6282138057177" target="_blank" rel="noreferrer" className="inline-flex w-max items-center gap-3 rounded-full bg-[#202127] px-6 py-3.5 text-sm font-bold text-white transition-transform hover:scale-[1.03]">
               Mulai percakapan <span className="text-lime-300">↗</span>
             </a>
           </div>

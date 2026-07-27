@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import InteractiveBackground from "@/components/InteractiveBackground";
+import PageMotion from "@/components/PageMotion";
 
 const passwordRecoveryRedirect = `
   (() => {
@@ -24,6 +25,22 @@ const passwordRecoveryRedirect = `
       window.location.replace(
         "/reset-password" + window.location.search + window.location.hash,
       );
+    }
+  })();
+`;
+
+const themeInitializer = `
+  (() => {
+    try {
+      const saved = window.localStorage.getItem("portfolio-theme");
+      const preferred = window.matchMedia("(prefers-color-scheme: light)").matches
+        ? "light"
+        : "dark";
+      const theme = saved === "light" || saved === "dark" ? saved : preferred;
+      document.documentElement.dataset.theme = theme;
+      document.documentElement.style.colorScheme = theme;
+    } catch {
+      document.documentElement.dataset.theme = "dark";
     }
   })();
 `;
@@ -59,12 +76,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id">
+    <html lang="id" suppressHydrationWarning>
+      <Script id="theme-initializer" strategy="beforeInteractive">
+        {themeInitializer}
+      </Script>
       <Script id="password-recovery-redirect" strategy="beforeInteractive">
         {passwordRecoveryRedirect}
       </Script>
       <body suppressHydrationWarning>
         <InteractiveBackground />
+        <PageMotion />
         <Navbar />
         <main className="relative z-10 min-h-screen">{children}</main>
         <Footer />

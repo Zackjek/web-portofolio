@@ -26,7 +26,7 @@ export default function PortfolioExplorer({ items }: { items: PortfolioItem[] })
 
   return (
     <div>
-      <div className="mt-10 flex flex-col gap-4 rounded-2xl border border-white/[0.08] bg-white/[0.025] p-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="filter-shell mt-10 flex flex-col gap-4 border border-white/[0.08] p-3 sm:flex-row sm:items-center sm:justify-between">
         <label className="flex min-w-0 flex-1 items-center gap-3 rounded-xl border border-white/[0.08] bg-[#080d11] px-4 py-3">
           <svg className="h-4 w-4 shrink-0 text-zinc-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
             <circle cx="11" cy="11" r="7" />
@@ -59,7 +59,7 @@ export default function PortfolioExplorer({ items }: { items: PortfolioItem[] })
               onClick={() => setActiveTag(tag)}
               className={`shrink-0 rounded-full px-4 py-2 text-xs font-semibold transition-all ${
                 activeTag === tag
-                  ? "bg-lime-300 text-[#071005]"
+                  ? "bg-lime-300 text-[#202127]"
                   : "border border-white/[0.08] bg-white/[0.025] text-zinc-500 hover:border-white/20 hover:text-white"
               }`}
             >
@@ -73,12 +73,12 @@ export default function PortfolioExplorer({ items }: { items: PortfolioItem[] })
         {filteredItems.map((item, index) => (
           <article
             key={item.id}
-            className={`glass-card interactive-card group rounded-[1.4rem] p-3 ${
+            className={`glass-card interactive-card color-card organic-card group p-3 ${
               index % 5 === 0 && filteredItems.length > 2 ? "md:col-span-2" : ""
             }`}
           >
             <Link href={`/portofolio/${item.id}`} className={`grid h-full ${index % 5 === 0 && filteredItems.length > 2 ? "md:grid-cols-[1.15fr_0.85fr]" : ""}`}>
-              <div className={`relative overflow-hidden rounded-xl bg-[#10171c] ${index % 5 === 0 && filteredItems.length > 2 ? "aspect-[16/10] md:aspect-auto md:min-h-[360px]" : "aspect-[16/10]"}`}>
+              <div className={`dark-media relative overflow-hidden rounded-xl bg-[#10171c] ${index % 5 === 0 && filteredItems.length > 2 ? "aspect-[16/10] md:aspect-auto md:min-h-[360px]" : "aspect-[16/10]"}`}>
                 {item.gambar_url ? (
                   <img
                     src={item.gambar_url}
@@ -93,7 +93,7 @@ export default function PortfolioExplorer({ items }: { items: PortfolioItem[] })
                 <span className="absolute left-4 top-4 rounded-full border border-white/15 bg-black/40 px-3 py-1.5 font-mono text-[9px] uppercase tracking-widest text-zinc-200 backdrop-blur-lg">
                   Work / {String(index + 1).padStart(2, "0")}
                 </span>
-                <span className="absolute bottom-4 right-4 grid h-11 w-11 translate-y-2 place-items-center rounded-full bg-lime-300 text-[#071005] opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                <span className="absolute bottom-4 right-4 grid h-11 w-11 translate-y-2 place-items-center rounded-full bg-lime-300 text-[#202127] opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
                   ↗
                 </span>
               </div>

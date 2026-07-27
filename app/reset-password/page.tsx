@@ -240,7 +240,7 @@ export default function ResetPasswordPage() {
           </p>
           <Link
             href="/admin"
-            className="mt-8 inline-flex w-full items-center justify-between rounded-xl bg-lime-300 px-5 py-4 text-sm font-black text-[#071005] transition hover:bg-lime-200"
+            className="mt-8 inline-flex w-full items-center justify-between rounded-xl bg-lime-300 px-5 py-4 text-sm font-black text-[#202127] transition hover:bg-lime-200"
           >
             <span>Masuk ke Admin Studio</span>
             <span>↗</span>
@@ -381,7 +381,7 @@ export default function ResetPasswordPage() {
               password.length < 8 ||
               confirmation.length < 8
             }
-            className="flex w-full items-center justify-between rounded-xl bg-lime-300 px-5 py-4 text-sm font-black text-[#071005] transition hover:bg-lime-200 disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex w-full items-center justify-between rounded-xl bg-lime-300 px-5 py-4 text-sm font-black text-[#202127] transition hover:bg-lime-200 disabled:cursor-not-allowed disabled:opacity-40"
           >
             <span>{updating ? "Menyimpan..." : "Simpan Password Baru"}</span>
             <span>↗</span>

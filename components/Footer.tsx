@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="page-shell flex flex-col gap-8 py-10 md:flex-row md:items-end md:justify-between">
         <div>
           <Link href="/" className="inline-flex items-center gap-3">
-            <span className="grid h-10 w-10 place-items-center rounded-full border border-lime-300/30 bg-lime-300/10 font-mono text-xs font-black text-lime-300">
+            <span className="brand-mark grid h-10 w-10 place-items-center rounded-full border border-lime-300/30 font-mono text-xs font-black">
               ZM
             </span>
             <span className="font-semibold tracking-tight text-white">Muhammad Zaky Mubarok</span>

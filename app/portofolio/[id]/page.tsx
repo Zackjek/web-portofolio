@@ -57,7 +57,7 @@ export default async function PortfolioDetailPage({
         </div>
       </header>
 
-      <div className="overflow-hidden rounded-[1.75rem] border border-white/[0.1] bg-[#0a1015] shadow-2xl">
+      <div className="dark-media overflow-hidden rounded-[1.75rem] border border-white/[0.1] bg-[#0a1015] shadow-2xl">
         {pdf ? (
           <div className="grid min-h-[65vh] place-items-center p-8 text-center">
             <div>
@@ -66,7 +66,7 @@ export default async function PortfolioDetailPage({
                 <path d="M14 3v5h5M9.5 15h5M9.5 18h3.5" />
               </svg>
               <h2 className="mt-6 text-2xl font-black text-white">Dokumen PDF</h2>
-              <a href={project.gambar_url} target="_blank" rel="noreferrer" className="mt-6 inline-flex items-center gap-3 rounded-full bg-lime-300 px-6 py-3 text-sm font-black text-[#071005]">
+              <a href={project.gambar_url} target="_blank" rel="noreferrer" className="mt-6 inline-flex items-center gap-3 rounded-full bg-lime-300 px-6 py-3 text-sm font-black text-[#202127]">
                 Buka dokumen <span>↗</span>
               </a>
             </div>

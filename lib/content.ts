@@ -54,7 +54,39 @@ export function getCertificateMeta(item: Pick<PortfolioItem, "teknologi">) {
 
 export function stripHtml(html: string | null | undefined) {
   if (!html) return "Belum ada ringkasan.";
-  return html.replace(/<[^>]*>?/gm, " ").replace(/\s+/g, " ").trim();
+
+  let text = html
+    .replace(/<(style|script|xml)\b[^>]*>[\s\S]*?<\/\1>/gi, " ")
+    .replace(/<!--[\s\S]*?-->/g, " ")
+    .replace(/(?:v|o|w)\\?:\*\s*\{[^}]*\}/gi, " ")
+    .replace(/\.shape\s*\{[^}]*\}/gi, " ")
+    .replace(/table\.MsoNormalTable\s*\{[^}]*\}/gi, " ")
+    .replace(/\/\*\s*Style Definitions\s*\*\//gi, " ")
+    .replace(/<[^>]*>?/gm, " ")
+    .replace(/&nbsp;|&#160;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&quot;|&#34;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (
+    /behavior\s*:\s*url|mso-|MsoNormal|Style Definitions|\bNormal\s+0\s+false/i.test(
+      text,
+    )
+  ) {
+    const meaningfulStart = [
+      text.search(/Ringkasan Aktivitas/i),
+      text.search(/Capaian (?:Minggu|Utama)/i),
+      text.search(/(?:^|\s)1(?:️)?\s*(?:⃣|️⃣)/u),
+    ].filter((index) => index >= 0);
+
+    if (meaningfulStart.length > 0) {
+      text = text.slice(Math.min(...meaningfulStart));
+    }
+  }
+
+  return text || "Belum ada ringkasan.";
 }
 
 export function formatDate(date: string, options?: Intl.DateTimeFormatOptions) {
